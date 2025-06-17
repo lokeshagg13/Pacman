@@ -1,0 +1,116 @@
+class Player {
+    constructor({ position, velocity, radius }) {
+        this.position = position;
+        this.velocity = velocity;
+        this.radius = radius;
+
+        this.visualRadius = {
+            x: radius.x * 0.8,
+            y: radius.y * 0.8
+        };
+
+        this.state = null;
+    }
+
+    // Change current state of the player
+    changeState(newState) {
+        this.state = newState;
+    }
+
+    // Get current bounding positions of the player
+    getCurrentBoundingPositions() {
+        return {
+            top: this.position.y - this.radius.y,
+            bottom: this.position.y + this.radius.y,
+            left: this.position.x - this.radius.x,
+            right: this.position.x + this.radius.x
+        }
+    }
+
+    // Get bounding positions in a certain direction
+    getNextStateBoundingPositions(direction, cellWidth, cellHeight) {
+        const offsets = {
+            up: { x: 0, y: -(cellHeight / 2 - this.radius.y) },
+            down: { x: 0, y: cellHeight / 2 - this.radius.y },
+            left: { x: -(cellWidth / 2 - this.radius.x), y: 0 },
+            right: { x: cellWidth / 2 - this.radius.x, y: 0 }
+        };
+
+        const { x: offsetX = 0, y: offsetY = 0 } = offsets[direction] || {};
+
+        const { top, bottom, left, right } = this.getCurrentBoundingPositions();
+
+        return {
+            top: top + offsetY,
+            bottom: bottom + offsetY,
+            left: left + offsetX,
+            right: right + offsetX
+        };
+    }
+
+    // If player's movement takes it off the centres of the grid, snap it back to the grid
+    snapToGrid(cellWidth, cellHeight) {
+        if (this.state === "up" || this.state === "down") {
+            this.position.x = Math.floor(this.position.x / cellWidth) * cellWidth + cellWidth / 2;
+        } else if (this.state === "left" || this.state === "right") {
+            this.position.y = Math.floor(this.position.y / cellHeight) * cellHeight + cellHeight / 2;
+        }
+    }
+
+    // Move the player based on its current state
+    move() {
+        if (this.state === "up") this.position.y -= this.velocity.y;
+        if (this.state === "down") this.position.y += this.velocity.y;
+        if (this.state === "left") this.position.x -= this.velocity.x;
+        if (this.state === "right") this.position.x += this.velocity.x;
+    }
+
+    // Calculate angles for mouth opening of the pacman player
+    getMouthingAngles() {
+        let startAngle = 0;
+        let endAngle = 2 * Math.PI;
+        // Adjust mouth angles based on current state
+        if (this.state === "up") {
+            startAngle = (-60 * Math.PI) / 180; // 30 degrees
+            endAngle = (240 * Math.PI) / 180; // 330 degrees
+        } else if (this.state === "down") {
+            startAngle = (120 * Math.PI) / 180; // 210 degrees
+            endAngle = (420 * Math.PI) / 180; // 150 degrees
+        } else if (this.state === "left") {
+            startAngle = (-150 * Math.PI) / 180; // 120 degrees
+            endAngle = (150 * Math.PI) / 180; // 240 degrees
+        } else if (this.state === "right") {
+            startAngle = (30 * Math.PI) / 180; // 30 degrees
+            endAngle = (330 * Math.PI) / 180; // 330 degrees
+        }
+        return { startAngle, endAngle }
+    }
+
+    // Draw the pacman player
+    draw(ctx) {
+        const { startAngle, endAngle } = this.getMouthingAngles();
+
+        // Draw Pacman
+        ctx.save();
+        ctx.translate(this.position.x, this.position.y);
+        ctx.rotate(0);
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.ellipse(
+            0,
+            0,
+            this.visualRadius.x,
+            this.visualRadius.y,
+            0,
+            startAngle,
+            endAngle
+        );
+        ctx.lineTo(0, 0);
+        ctx.fillStyle = "yellow";
+        ctx.fill();
+        ctx.closePath();
+        ctx.restore();
+    }
+}
+
+export default Player;

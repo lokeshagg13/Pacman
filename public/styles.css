@@ -1,0 +1,36 @@
+@layer theme {
+  :root,
+  :host {
+    --color-dark-blue: rgba(2, 7, 11, 255);
+  }
+}
+
+@layer utilities {
+  .bg-dark-blue {
+    background: var(--color-dark-blue);
+  }
+
+  .img-fit {
+    max-width: 90%;
+    object-fit: contain;
+  }
+
+  .canvas-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 16px;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    width: 100%;
+  }
+
+  .game-canvas {
+    display: block;
+    border: 2px solid #94a3b8;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    max-width: 1000px;
+    width: 100%;
+    height: 100vh;
+  }
+}
