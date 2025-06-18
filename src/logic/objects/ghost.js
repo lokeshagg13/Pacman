@@ -16,20 +16,20 @@ class Ghost {
     // Get current bounding positions of the player
     getCurrentBoundingPositions() {
         return {
-            top: this.position.y - this.height / 2,
-            bottom: this.position.y + this.width,
-            left: this.position.x - this.width,
-            right: this.position.x + this.radius.x
+            top: this.position.y,
+            bottom: this.position.y + this.height,
+            left: this.position.x,
+            right: this.position.x + this.width
         }
     }
 
     // Get bounding positions in a certain direction
     getNextStateBoundingPositions(direction, cellWidth, cellHeight) {
         const offsets = {
-            up: { x: 0, y: -(cellHeight / 2 - this.radius.y) },
-            down: { x: 0, y: cellHeight / 2 - this.radius.y },
-            left: { x: -(cellWidth / 2 - this.radius.x), y: 0 },
-            right: { x: cellWidth / 2 - this.radius.x, y: 0 }
+            up: { x: 0, y: -(cellHeight - this.height) / 2 },
+            down: { x: 0, y: (cellHeight - this.height) / 2 },
+            left: { x: -(cellWidth - this.width) / 2, y: 0 },
+            right: { x: (cellWidth - this.width) / 2, y: 0 }
         };
 
         const { x: offsetX = 0, y: offsetY = 0 } = offsets[direction] || {};
@@ -47,9 +47,9 @@ class Ghost {
     // If player's movement takes it off the centres of the grid, snap it back to the grid
     snapToGrid(cellWidth, cellHeight) {
         if (this.state === "up" || this.state === "down") {
-            this.position.x = Math.floor(this.position.x / cellWidth) * cellWidth + cellWidth / 2;
+            this.position.x = Math.floor(this.position.x / cellWidth) * cellWidth + (cellWidth - this.width) / 2;
         } else if (this.state === "left" || this.state === "right") {
-            this.position.y = Math.floor(this.position.y / cellHeight) * cellHeight + cellHeight / 2;
+            this.position.y = Math.floor(this.position.y / cellHeight) * cellHeight + (cellHeight - this.height) / 2;
         }
     }
 
