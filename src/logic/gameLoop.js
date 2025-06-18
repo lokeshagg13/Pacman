@@ -5,7 +5,7 @@ let game;
 
 // Handle resizing
 function handleResize() {
-    game.resizeGameObjects();
+    game.generateAndResizeGameObjects();
 }
 
 // Handle key press
@@ -43,7 +43,7 @@ export function initGame(gameCanvas, stateHandlers) {
             animationFrameId = requestAnimationFrame(gameLoop);
         }
 
-        game.resizeGameObjects();
+        game.generateAndResizeGameObjects();
         animationFrameId = requestAnimationFrame(gameLoop);
 
         window.addEventListener('resize', handleResize);

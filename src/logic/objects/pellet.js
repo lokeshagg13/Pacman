@@ -4,6 +4,21 @@ class Pellet {
         this.radius = radius;
     }
 
+    isCollidingWithPlayer(player) {
+        const playerCenterX = player.position.x;
+        const playerCenterY = player.position.y;
+        const playerRadiusX = player.radius.x;
+        const playerRadiusY = player.radius.y;
+
+        const distanceX = Math.abs(playerCenterX - this.position.x);
+        const distanceY = Math.abs(playerCenterY - this.position.y);
+
+        return (
+            distanceX <= (playerRadiusX + this.radius.x) &&
+            distanceY <= (playerRadiusY + this.radius.y)
+        );
+    }
+
     draw(ctx) {
         ctx.beginPath();
         ctx.ellipse(
