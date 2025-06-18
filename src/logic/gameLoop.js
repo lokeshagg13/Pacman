@@ -10,23 +10,23 @@ function handleResize() {
 
 // Handle key press
 function handleKeyDown(e) {
-    if (e.key in game.keyState) {
+    if (e.key in game.playerController.keyState) {
         e.preventDefault();
-        game.keyState[e.key] = true;
-        game.keyState.lastKey = e.key;
+        game.playerController.keyState[e.key] = true;
+        game.playerController.keyState.lastKey = e.key;
     }
 }
 
 // Handle key up
 function handleKeyUp(e) {
-    if (e.key in game.keyState) {
+    if (e.key in game.playerController.keyState) {
         e.preventDefault();
-        game.keyState[e.key] = false;
+        game.playerController.keyState[e.key] = false;
     }
 }
 
-export function initGame(gameCanvas) {
-    game = new Game(gameCanvas);
+export function initGame(gameCanvas, stateHandlers) {
+    game = new Game(gameCanvas, stateHandlers);
 
     const frameDuration = 1000 / constants.TARGET_FPS;
     let lastTime = performance.now();

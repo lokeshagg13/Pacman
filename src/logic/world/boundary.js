@@ -62,7 +62,7 @@ class Boundary {
             default: return createImage(PipeHorizontalImage);
         }
     }
-
+    
     draw(ctx) {
         ctx.drawImage(this.image, this.position.x, this.position.y, this.width, this.height);
     }

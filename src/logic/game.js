@@ -1,46 +1,65 @@
 import constants from "../store/constants";
-import blueprints from "./data/blueprints.json";
-import Map from "./objects/map";
+import Blueprint from "./world/blueprint";
+import Map from "./world/map";
+import Ghost from "./objects/ghost";
 import Player from "./objects/player";
+import PlayerController from "./controllers/PlayerController";
 
 class Game {
-    constructor(canvas) {
+    constructor(canvas, stateHandlers) {
         // Basic Game Config
         this.canvas = canvas;
 
         // Game Objects
-        this.blueprint = Game.getBlueprint();
+        this.blueprint = Blueprint.fetch();
         this.map = null;
         this.player = null;
+        this.ghosts = [];
 
-        // Player Movement Controls
-        this.keyState = {
-            w: false,
-            s: false,
-            a: false,
-            d: false,
-            ArrowUp: false,
-            ArrowDown: false,
-            ArrowLeft: false,
-            ArrowRight: false,
-            lastKey: ''
-        }
-    }
+        // Game Object Controllers
+        this.playerController = new PlayerController(this);
 
-    static getBlueprint() {
-        return blueprints[0].blueprint;
+        // Score Handling Functions
+        this.incrementScore = stateHandlers.incrementScore;
     }
 
     // Resizing the pacman player based on map's cell dimensions and canvas dimensions
-    resizePlayer(cellWidth, cellHeight) {
+    spawnAndResizePlayer(cellWidth, cellHeight) {
         const playerRadiusX = Math.floor(0.4 * cellWidth);
         const playerRadiusY = Math.floor(0.4 * cellHeight);
         const playerVelocityX = constants.PLAYER_VELOCITY_PERC * this.canvas.width;
         const playerVelocityY = constants.PLAYER_VELOCITY_PERC * this.canvas.height;
+        const { row, col } = Blueprint.findElementInBlueprint(
+            constants.SPAWN_SYMBOL.PLAYER_ORIGIN,
+            this.blueprint
+        );
+
         return new Player({
-            position: { x: cellWidth * 1.5, y: cellHeight * 1.5 },
+            position: { x: cellWidth * (col + 0.5), y: cellHeight * (row + 0.5) },
             velocity: { x: playerVelocityX, y: playerVelocityY },
             radius: { x: playerRadiusX, y: playerRadiusY }
+        })
+    }
+
+    // Resizing the ghost based on map's cell dimensions and canvas dimensions
+    spawnAndResizeGhost(cellWidth, cellHeight) {
+        const ghostWidth = Math.floor(0.5 * cellWidth);
+        const ghostHeight = Math.floor(0.5 * cellHeight);
+        const ghostVelocityX = constants.GHOST_VELOCITY_PERC * this.canvas.width;
+        const ghostVelocityY = constants.GHOST_VELOCITY_PERC * this.canvas.height;
+
+        const { row, col } = Blueprint.findElementInBlueprint(
+            constants.SPAWN_SYMBOL.GHOST_ORIGIN,
+            this.blueprint
+        );
+
+        return new Ghost({
+            position: {
+                x: cellWidth * col + (cellWidth - ghostWidth) * 0.5, y: cellHeight * row + (cellHeight - ghostHeight) * 0.5
+            },
+            velocity: { x: ghostVelocityX, y: ghostVelocityY },
+            width: ghostWidth,
+            height: ghostHeight
         })
     }
 
@@ -60,91 +79,14 @@ class Game {
             }
         });
 
-        this.player = this.resizePlayer(cellWidth, cellHeight);
-    }
-
-    // Checks for player's movement based on current position and next potential positions
-    isPositionalMovementValid(direction) {
-        if (!["up", "down", "left", "right"].includes(direction)) {
-            return false;
-        }
-
-        const playerNextPosition = this.player.getNextStateBoundingPositions(
-            direction,
-            this.map.cellWidth,
-            this.map.cellHeight
-        );
-
-        for (let i = 0; i < this.map.boundaries.length; i++) {
-            const currentBoundary = this.map.boundaries[i].boundingBox;
-            if (
-                playerNextPosition.top < currentBoundary.bottom &&
-                playerNextPosition.right > currentBoundary.left &&
-                playerNextPosition.bottom > currentBoundary.top &&
-                playerNextPosition.left < currentBoundary.right
-            ) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    // Checks for player's movement based on current cell (row and col of the map) and next potential cell
-    isCellMovementValid(direction) {
-        const rowOffset = { up: -1, down: 1, left: 0, right: 0 };
-        const colOffset = { up: 0, down: 0, left: -1, right: 1 };
-
-        const playerRow = Math.floor(this.player.position.y / this.map.cellHeight);
-        const playerCol = Math.floor(this.player.position.x / this.map.cellWidth);
-
-        const newRow = playerRow + (rowOffset[direction] || 0);
-        const newCol = playerCol + (colOffset[direction] || 0);
-
-        return (
-            newRow >= 0 &&
-            newRow < this.map.blueprint.length &&
-            newCol >= 0 &&
-            newCol < this.map.blueprint[0].length &&
-            this.map.blueprint[newRow][newCol] === "."
-        );
-    }
-
-    // Combined checks of player's positional and cell movement
-    isOverallPlayerMovementValid(direction) {
-        if (!this.isPositionalMovementValid(direction)) return false;
-        return this.isCellMovementValid(direction)
-    }
-
-    // Update player's movement state based on key presses
-    updatePlayerMovement() {
-        const directionKeys = {
-            w: "up", ArrowUp: "up",
-            s: "down", ArrowDown: "down",
-            a: "left", ArrowLeft: "left",
-            d: "right", ArrowRight: "right"
-        };
-
-        const direction = directionKeys[this.keyState.lastKey];
-        if (
-            direction && this.keyState[this.keyState.lastKey] &&
-            this.isOverallPlayerMovementValid(direction)
-        ) {
-            this.player.changeState(direction);
-        }
-    }
-
-    // Move the player and adjust the position
-    movePlayerCarefully() {
-        if (this.isPositionalMovementValid(this.player.state)) {
-            this.player.move();
-            this.player.snapToGrid(this.map.cellWidth, this.map.cellHeight);
-        }
+        this.player = this.spawnAndResizePlayer(cellWidth, cellHeight);
+        this.ghosts = [];
+        this.ghosts.push(this.spawnAndResizeGhost(cellWidth, cellHeight));
     }
 
     // Update all the game objects
     updateGameObjects() {
-        this.updatePlayerMovement();
-        this.movePlayerCarefully();
+        this.playerController.update();
     }
 
     // Draw all the game objects
@@ -154,6 +96,8 @@ class Game {
 
         this.map.draw(ctx);
         this.player.draw(ctx);
+
+        this.ghosts.forEach(ghost => ghost.draw(ctx));
     }
 }
 

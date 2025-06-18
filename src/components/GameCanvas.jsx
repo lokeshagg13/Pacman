@@ -1,18 +1,21 @@
-import { useEffect, useRef } from "react";
+import { useContext, useEffect } from "react";
 import { initGame } from "../logic/gameLoop";
+import GameContext from "../store/gameContext";
 
 function GameCanvas() {
-  const canvasRef = useRef(null);
+  const gameContext = useContext(GameContext);
 
   useEffect(() => {
-    const gameCanvas = canvasRef.current;
+    const gameCanvas = gameContext.gameCanvasRef.current;
     const resizeCanvas = () => {
       gameCanvas.width = Math.min(window.innerWidth * 0.9, 2160);
       gameCanvas.height = Math.min(window.innerHeight * 0.6, 1180);
     };
     resizeCanvas();
-    initGame(canvasRef.current);
-    window.addEventListener("resize", () => resizeCanvas()); // Handle window resize
+    initGame(gameContext.gameCanvasRef.current, {
+      incrementScore: gameContext.incrementScore,
+    });
+    window.addEventListener("resize", () => resizeCanvas());
     return () =>
       window.removeEventListener("resize", () => resizeCanvas(false));
     // eslint-disable-next-line
@@ -20,7 +23,11 @@ function GameCanvas() {
 
   return (
     <div className="canvas-wrapper">
-      <canvas id="gameCanvas" ref={canvasRef} className="game-canvas" />
+      <canvas
+        id="gameCanvas"
+        ref={gameContext.gameCanvasRef}
+        className="game-canvas"
+      />
     </div>
   );
 }

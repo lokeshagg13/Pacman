@@ -1,5 +1,6 @@
+import Blueprint from "./blueprint";
 import Boundary from "./boundary";
-import Pellet from "./pellet";
+import Pellet from "../objects/pellet";
 
 class Map {
     constructor({ blueprint, cellWidth, cellHeight, pelletRadius }) {
@@ -19,7 +20,7 @@ class Map {
                 const x = this.cellWidth * j;
                 const y = this.cellHeight * i;
 
-                if (symbol === 'O') {
+                if (Blueprint.spawnSymbols.includes(symbol)) {
                     return;
                 }
                 if (symbol === ".") {
