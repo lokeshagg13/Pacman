@@ -6,6 +6,7 @@ class Ghost {
         this.height = height;
         this.color = color;
         this.state = null;
+        this.straightSteps = 0;
     }
 
     // Change current state of the player

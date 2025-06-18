@@ -5,6 +5,7 @@ import Pellet from "./objects/pellet";
 import Ghost from "./objects/ghost";
 import Player from "./objects/player";
 import PlayerController from "./controllers/playerController";
+import GhostController from "./controllers/ghostController";
 
 class Game {
     constructor(canvas, stateHandlers) {
@@ -20,12 +21,13 @@ class Game {
 
         // Game Object Controllers
         this.playerController = new PlayerController(this);
+        this.ghostController = new GhostController(this);
 
         // Score Handling Functions
         this.incrementScore = stateHandlers.incrementScore;
     }
 
-    // Create and Resize pellets 
+    // Create and Resize pellets based on map's cell dimensions
     createAndResizePellets(cellWidth, cellHeight) {
         const pelletRadiusX = 0.08 * cellWidth;
         const pelletRadiusY = 0.08 * cellHeight;
@@ -84,7 +86,8 @@ class Game {
         this.ghosts.push(
             new Ghost({
                 position: {
-                    x: cellWidth * col + (cellWidth - ghostWidth) * 0.5, y: cellHeight * row + (cellHeight - ghostHeight) * 0.5
+                    x: cellWidth * col + (cellWidth - ghostWidth) * 0.5, 
+                    y: cellHeight * row + (cellHeight - ghostHeight) * 0.5
                 },
                 velocity: { x: ghostVelocityX, y: ghostVelocityY },
                 width: ghostWidth,
@@ -122,6 +125,7 @@ class Game {
     // Update all the game objects
     updateGameObjects() {
         this.playerController.update();
+        this.ghostController.update();
         this.checkPelletsCollision();
     }
 
