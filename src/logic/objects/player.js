@@ -1,15 +1,20 @@
+import constants from "../../store/constants";
+
 class Player {
     constructor({ position, velocity, radius }) {
         this.position = position;
         this.velocity = velocity;
         this.radius = radius;
-
         this.visualRadius = {
             x: radius.x * 0.8,
             y: radius.y * 0.8
         };
-
         this.state = null;
+
+        // Mouth animation properties
+        this.mouthRate = 1; // Range: 0 (closed) to 1 (fully open)
+        this.mouthDirection = -1; // 1 for opening, -1 for closing
+        this.mouthSpeed = 0.1; // Rate of change for mouth animation
     }
 
     // Change current state of the player
@@ -24,7 +29,7 @@ class Player {
             bottom: this.position.y + this.radius.y,
             left: this.position.x - this.radius.x,
             right: this.position.x + this.radius.x
-        }
+        };
     }
 
     // Get bounding positions in a certain direction
@@ -65,25 +70,30 @@ class Player {
         if (this.state === "right") this.position.x += this.velocity.x;
     }
 
-    // Calculate angles for mouth opening of the pacman player
+    // Calculate angles for mouth opening of the pacman player and adjust mouth angles based on state and mouthRate
     getMouthingAngles() {
-        let startAngle = 0;
-        let endAngle = 2 * Math.PI;
-        // Adjust mouth angles based on current state
-        if (this.state === "up") {
-            startAngle = (-60 * Math.PI) / 180; // 30 degrees
-            endAngle = (240 * Math.PI) / 180; // 330 degrees
-        } else if (this.state === "down") {
-            startAngle = (120 * Math.PI) / 180; // 210 degrees
-            endAngle = (420 * Math.PI) / 180; // 150 degrees
+        const currentOpening = constants.PLAYER_MAX_MOUTH_OPENING * this.mouthRate;
+        let startAngle = 0 * Math.PI + currentOpening;
+        let endAngle = 2 * Math.PI - currentOpening;
+        if (this.state === "down") {
+            startAngle = 0.5 * Math.PI + currentOpening;
+            endAngle = 2.5 * Math.PI - currentOpening;
         } else if (this.state === "left") {
-            startAngle = (-150 * Math.PI) / 180; // 120 degrees
-            endAngle = (150 * Math.PI) / 180; // 240 degrees
-        } else if (this.state === "right") {
-            startAngle = (30 * Math.PI) / 180; // 30 degrees
-            endAngle = (330 * Math.PI) / 180; // 330 degrees
+            startAngle = 1 * Math.PI + currentOpening;
+            endAngle = 3 * Math.PI - currentOpening;
+        } else if (this.state === "up") {
+            startAngle = 1.5 * Math.PI + currentOpening;
+            endAngle = 3.5 * Math.PI - currentOpening;
         }
-        return { startAngle, endAngle }
+        return { startAngle, endAngle };
+    }
+
+    // Animate the mouth opening and closing
+    updateMouthAnimation() {
+        this.mouthRate += this.mouthDirection * this.mouthSpeed;
+        if (this.mouthRate >= 1 || this.mouthRate <= 0) {
+            this.mouthDirection *= -1;
+        }
     }
 
     // Draw the pacman player

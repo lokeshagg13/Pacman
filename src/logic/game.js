@@ -138,6 +138,7 @@ class Game {
 
     // Update all the game objects
     updateGameObjects() {
+        this.player.updateMouthAnimation();
         this.playerController.update();
         this.ghostController.update();
         this.checkPelletsCollision();
