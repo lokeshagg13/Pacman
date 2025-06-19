@@ -1,26 +1,34 @@
 class Ghost {
-    constructor({ position, velocity, width, height, color = "red" }) {
-        this.position = position;
+    constructor({ position, velocity, width, height, color = "red", promixityRadius = null }) {
+        this.position = position; // center position
         this.velocity = velocity;
         this.width = width;
         this.height = height;
         this.color = color;
+        this.promixityRadius = promixityRadius;
         this.state = null;
-        this.straightSteps = 0;
+        
+        // Initializing instance variables which are used in ghost controller
+        this.randomSteps = 0;
+        this.randomDirection = null;
+        this.pathToPlayer = [];
+        this.pathIndex = -1;
+        this.targetCell = null;
+        this.targetPosition = null;
     }
 
-    // Change current state of the player
+    // Change current state of the ghost
     changeState(newState) {
         this.state = newState;
     }
 
-    // Get current bounding positions of the player
+    // Get current bounding positions of the ghost
     getCurrentBoundingPositions() {
         return {
-            top: this.position.y,
-            bottom: this.position.y + this.height,
-            left: this.position.x,
-            right: this.position.x + this.width
+            top: this.position.y - this.height * 0.5,
+            bottom: this.position.y + this.height * 0.5,
+            left: this.position.x - this.width * 0.5,
+            right: this.position.x + this.width * 0.5
         }
     }
 
@@ -45,16 +53,16 @@ class Ghost {
         };
     }
 
-    // If player's movement takes it off the centres of the grid, snap it back to the grid
+    // If ghost's movement takes it off the centres of the grid, snap it back to the grid
     snapToGrid(cellWidth, cellHeight) {
         if (this.state === "up" || this.state === "down") {
-            this.position.x = Math.floor(this.position.x / cellWidth) * cellWidth + (cellWidth - this.width) / 2;
+            this.position.x = Math.floor(this.position.x / cellWidth) * cellWidth + cellWidth / 2;
         } else if (this.state === "left" || this.state === "right") {
-            this.position.y = Math.floor(this.position.y / cellHeight) * cellHeight + (cellHeight - this.height) / 2;
+            this.position.y = Math.floor(this.position.y / cellHeight) * cellHeight + cellHeight / 2;
         }
     }
 
-    // Move the player based on its current state
+    // Move the ghost based on its current state
     move() {
         if (this.state === "up") this.position.y -= this.velocity.y;
         if (this.state === "down") this.position.y += this.velocity.y;
@@ -63,16 +71,32 @@ class Ghost {
     }
 
     // Draw the ghost
-    draw(ctx) {
-        const { x, y } = this.position;
+    draw(ctx, { showProximity = null }) {
+        const { top, left } = this.getCurrentBoundingPositions();
+        const legRadiusX = this.width / 6;
+        const legRadiusY = this.height / 6;
+
+        // Draw promixity circle if required
+        if (showProximity) {
+            const {x, y} = this.position;
+            const {x: prX, y: prY} = this.promixityRadius;
+            ctx.save();
+            ctx.beginPath();
+            ctx.ellipse(x, y, prX, prY, 0, 0, Math.PI * 2);
+            ctx.globalAlpha = 0.3;
+            ctx.fillStyle = this.color;
+            ctx.fill();
+            ctx.globalAlpha = 1;
+            ctx.restore();
+        }
 
         // Draw body (arc for rounded top)
+        const bodyHeight = this.height - legRadiusY;
         ctx.beginPath();
-        ctx.arc(x + this.width / 2, y + this.height / 2, this.width / 2, Math.PI, 0, false);
-        ctx.lineTo(x + this.width, y + this.height);
-        ctx.lineTo(x, y + this.height);
+        ctx.arc(left + this.width / 2, top + this.height / 2, this.width / 2, Math.PI, 0, false);
+        ctx.lineTo(left + this.width, top + bodyHeight);
+        ctx.lineTo(left, top + bodyHeight);
         ctx.closePath();
-
         ctx.fillStyle = this.color;
         ctx.fill();
 
@@ -81,17 +105,27 @@ class Ghost {
         const eyeOffsetX = this.width * 0.2;
         const eyeOffsetY = this.height * 0.3;
         ctx.beginPath();
-        ctx.arc(x + eyeOffsetX, y + eyeOffsetY, eyeRadius, 0, Math.PI * 2);
-        ctx.arc(x + this.width - eyeOffsetX, y + eyeOffsetY, eyeRadius, 0, Math.PI * 2);
+        ctx.arc(left + eyeOffsetX, top + eyeOffsetY, eyeRadius, 0, Math.PI * 2);
+        ctx.arc(left + this.width - eyeOffsetX, top + eyeOffsetY, eyeRadius, 0, Math.PI * 2);
         ctx.fillStyle = "white";
         ctx.fill();
 
         // Draw pupils
         const pupilRadius = eyeRadius * 0.5;
         ctx.beginPath();
-        ctx.arc(x + eyeOffsetX, y + eyeOffsetY, pupilRadius, 0, Math.PI * 2);
-        ctx.arc(x + this.width - eyeOffsetX, y + eyeOffsetY, pupilRadius, 0, Math.PI * 2);
+        ctx.arc(left + eyeOffsetX, top + eyeOffsetY, pupilRadius, 0, Math.PI * 2);
+        ctx.arc(left + this.width - eyeOffsetX, top + eyeOffsetY, pupilRadius, 0, Math.PI * 2);
         ctx.fillStyle = "black";
+        ctx.fill();
+
+        // Draw legs (three ellipses at the bottom)
+        ctx.beginPath();
+        for (let i = 0; i < 3; i++) {
+            const legX = left + (2 * i + 1) * legRadiusX;
+            const legY = top + this.height - legRadiusY;
+            ctx.ellipse(legX, legY, legRadiusX, legRadiusY, 0, 0, Math.PI * 2);
+        }
+        ctx.fillStyle = this.color;
         ctx.fill();
     }
 }

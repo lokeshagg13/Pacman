@@ -1,9 +1,28 @@
+import constants from "../../store/constants";
 import Blueprint from "../world/blueprint";
 
 class GhostController {
     static directions = ["up", "down", "left", "right"];
+    static rowOffset = { up: -1, down: 1, left: 0, right: 0 };
+    static colOffset = { up: 0, down: 0, left: -1, right: 1 };
+
     constructor(game) {
         this.game = game;
+        this.randomStepLimit = constants.GHOST_MOVEMENT.RANDOM_STEP_LIMIT;
+        this.pathUpdateInterval = constants.GHOST_MOVEMENT.PATH_UPDATE_INTERVAL;
+        this.lastPathUpdateTime = null;
+    }
+
+    // Check if ghost is within the proximity of the player
+    isPlayerWithinGhostProximity(ghost) {
+        const { position: playerPosition } = this.game.player;
+        const distance = {
+            x: ghost.position.x - playerPosition.x,
+            y: ghost.position.y - playerPosition.y
+        };
+        return (
+            (distance.x ** 2) / (ghost.promixityRadius.x ** 2) + (distance.y ** 2) / (ghost.promixityRadius.y ** 2) <= 1
+        );
     }
 
     // Checks for a particular ghost's movement based on current position and next potential positions
@@ -38,14 +57,10 @@ class GhostController {
     isCellMovementValid(ghost, direction) {
         const map = this.game.map;
 
-        const rowOffset = { up: -1, down: 1, left: 0, right: 0 };
-        const colOffset = { up: 0, down: 0, left: -1, right: 1 };
+        const { row: ghostRow, col: ghostCol } = this.game.map.getArrayIndicesForCanvasPosition(ghost.position);
 
-        const ghostRow = Math.floor(ghost.position.y / map.cellHeight);
-        const ghostCol = Math.floor(ghost.position.x / map.cellWidth);
-
-        const newRow = ghostRow + (rowOffset[direction] || 0);
-        const newCol = ghostCol + (colOffset[direction] || 0);
+        const newRow = ghostRow + (GhostController.rowOffset[direction] || 0);
+        const newCol = ghostCol + (GhostController.colOffset[direction] || 0);
 
         return (
             newRow >= 0 &&
@@ -57,13 +72,14 @@ class GhostController {
     }
 
     // Combined checks of a particular ghost's positional and cell movement
-    isOverallGhostMovementValid(ghost, direction) {
+    isRandomMovementValid(ghost, direction) {
         return (
             this.isPositionalMovementValid(ghost, direction) &&
             this.isCellMovementValid(ghost, direction)
         );
     }
 
+    // Get a random direction for ghost to move along
     getRandomDirection(excludeDirections = []) {
         if (excludeDirections.length === 4) return null;
         let randomDirection = GhostController.directions[Math.floor(Math.random() * GhostController.directions.length)];
@@ -73,41 +89,118 @@ class GhostController {
         return randomDirection;
     }
 
-    // Update ghost's movement state based on key presses
-    updateGhostMovement(ghost) {
-        const excludedDirections = ghost.state ? [ghost.state] : [];
-        let randomDirection = this.getRandomDirection(excludedDirections);
-        while (randomDirection && !this.isOverallGhostMovementValid(ghost, randomDirection) && excludedDirections.length < 4) {
-            excludedDirections.push(randomDirection);
-            randomDirection = this.getRandomDirection(excludedDirections);
+    // Update ghost's movement state randomly
+    updateGhostMovementRandomly(ghost) {
+        if (
+            !ghost.randomDirection ||
+            ghost.randomSteps >= this.randomStepLimit ||
+            !this.isRandomMovementValid(ghost, ghost.state)
+        ) {
+            const excludedDirections = ghost.randomDirection ? [ghost.randomDirection] : [];
+            let randomDirection = this.getRandomDirection(excludedDirections);
+            while (randomDirection && !this.isRandomMovementValid(ghost, randomDirection)) {
+                excludedDirections.push(randomDirection);
+                randomDirection = this.getRandomDirection(excludedDirections);
+            }
+            ghost.randomDirection = randomDirection;
+            ghost.randomSteps = 0;
+            ghost.changeState(randomDirection);
         }
-        ghost.changeState(randomDirection);
+
+        ghost.randomSteps += 1;
     }
 
-    // Move the player and adjust the position
-    moveGhostCarefully(ghost) {
-        const map = this.game.map;
+    // Recalculate Path to Player
+    recalculatePathToPlayer(ghost) {
+        const shortestPath = this.game.map.findShortestPath({
+            source: ghost.position,
+            destination: this.game.player.position
+        });
+        ghost.pathToPlayer = shortestPath || [];
+        ghost.pathIndex = 0;
+        ghost.targetCell = null;
+        ghost.targetPosition = null;
+    }
 
-        if (this.isPositionalMovementValid(ghost, ghost.state)) {
-            ghost.move();
-            ghost.snapToGrid(map.cellWidth, map.cellHeight);
-            ghost.straightSteps += 1;
-        } else {
-            this.updateGhostMovement(ghost);
-            ghost.straightSteps = 0;
+    // Update ghost's movement state along the path to the player
+    updateGhostMovementAlongPath(ghost) {
+        // Recalculate the path to player after some time
+        const now = new Date().getTime();
+        if (now - this.lastPathUpdateTime > this.pathUpdateInterval) {
+            this.recalculatePathToPlayer(ghost);
+            this.lastPathUpdateTime = now;
         }
 
-        if (ghost.straightSteps > 200) {
-            this.updateGhostMovement(ghost);
-            ghost.straightSteps = 0;
+        // Update the pathIndex if current move is completed
+        if (ghost.pathIndex >= 0 && ghost.pathIndex < ghost.pathToPlayer.length) {
+            const currentCell = this.game.map.getArrayIndicesForCanvasPosition(ghost.position);
+
+            if (!ghost.targetCell && !ghost.targetPosition) {
+                const currentDirection = ghost.pathToPlayer[ghost.pathIndex];
+                ghost.targetCell = {
+                    row: currentCell.row + GhostController.rowOffset[currentDirection],
+                    col: currentCell.col + GhostController.colOffset[currentDirection]
+                };
+                ghost.targetPosition = this.game.map.getCanvasPositionForArrayIndices({
+                    position: ghost.targetCell,
+                    offset: { x: 0.5, y: 0.5 }
+                });
+                ghost.changeState(currentDirection);
+            }
+
+            if (currentCell.row === ghost.targetCell.row && currentCell.col === ghost.targetCell.col) {
+                const distanceFromTarget = Math.hypot(
+                    ghost.position.x - ghost.targetPosition.x,
+                    ghost.position.y - ghost.targetPosition.y
+                );
+                if (distanceFromTarget < 1) {
+                    ghost.pathIndex += 1;
+                    if (ghost.pathIndex >= ghost.pathToPlayer.length) {
+                        this.recalculatePathToPlayer(ghost);
+                        this.lastPathUpdateTime = now;
+                        return;
+                    }
+                    const nextDirection = ghost.pathToPlayer[ghost.pathIndex];
+                    ghost.targetCell = {
+                        row: currentCell.row + GhostController.rowOffset[nextDirection],
+                        col: currentCell.col + GhostController.colOffset[nextDirection]
+                    };
+                    ghost.targetPosition = this.game.map.getCanvasPositionForArrayIndices({
+                        position: ghost.targetCell,
+                        offset: { x: 0.5, y: 0.5 }
+                    });
+                    ghost.changeState(nextDirection);
+                }
+            }
+        } else {
+            this.recalculatePathToPlayer(ghost);
+            this.lastPathUpdateTime = now;
         }
     }
 
     // Update ghost-related actions
     update() {
         this.game.ghosts.forEach((ghost) => {
-            this.moveGhostCarefully(ghost);
+            // Update movements
+            if (this.isPlayerWithinGhostProximity(ghost)) {
+                this.updateGhostMovementAlongPath(ghost);
+            } else {
+                this.updateGhostMovementRandomly(ghost);
+            }
+
+            // Move the ghost in the current state if the move is valid
+            if (this.isPositionalMovementValid(ghost, ghost.state)) {
+                ghost.move();
+                ghost.snapToGrid(this.game.map.cellWidth, this.game.map.cellHeight);
+            } else {
+                if (this.isPlayerWithinGhostProximity(ghost)) {
+                    this.updateGhostMovementAlongPath(ghost);
+                } else {
+                    this.updateGhostMovementRandomly(ghost);
+                }
+            }
         });
+
     }
 }
 

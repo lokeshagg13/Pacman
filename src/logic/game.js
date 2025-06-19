@@ -37,8 +37,10 @@ class Game {
         this.blueprint.forEach((row, i) => {
             row.forEach((symbol, j) => {
                 if (symbol === ".") {
-                    const x = cellWidth * (0.5 + j);
-                    const y = cellHeight * (0.5 + i);
+                    const { x, y } = this.map.getCanvasPositionForArrayIndices({
+                        position: { row: i, col: j },
+                        offset: { x: 0.5, y: 0.5 }
+                    });
                     this.pellets.push(
                         new Pellet({
                             position: { x, y },
@@ -62,9 +64,13 @@ class Game {
             constants.SPAWN_SYMBOL.PLAYER_ORIGIN,
             this.blueprint
         );
+        const { x, y } = this.map.getCanvasPositionForArrayIndices({
+            position: { row, col },
+            offset: { x: 0.5, y: 0.5 }
+        });
 
         this.player = new Player({
-            position: { x: cellWidth * (col + 0.5), y: cellHeight * (row + 0.5) },
+            position: { x, y },
             velocity: { x: playerVelocityX, y: playerVelocityY },
             radius: { x: playerRadiusX, y: playerRadiusY }
         });
@@ -73,27 +79,35 @@ class Game {
     // Spawn and Resize the ghosts based on map's cell dimensions and canvas dimensions
     spawnAndResizeGhosts(cellWidth, cellHeight) {
         const ghostWidth = Math.floor(0.5 * cellWidth);
-        const ghostHeight = Math.floor(0.5 * cellHeight);
+        const ghostHeight = Math.floor(0.8 * cellHeight);
         const ghostVelocityX = constants.GHOST_VELOCITY_PERC * this.canvas.width;
         const ghostVelocityY = constants.GHOST_VELOCITY_PERC * this.canvas.height;
         const { row, col } = Blueprint.findElementInBlueprint(
             constants.SPAWN_SYMBOL.GHOST_ORIGIN,
             this.blueprint
         );
+        const { x, y } = this.map.getCanvasPositionForArrayIndices({
+            position: { row, col },
+            offset: { x: 0.5, y: 0.5 }
+        });
 
         this.ghosts = [];
 
-        this.ghosts.push(
-            new Ghost({
-                position: {
-                    x: cellWidth * col + (cellWidth - ghostWidth) * 0.5, 
-                    y: cellHeight * row + (cellHeight - ghostHeight) * 0.5
-                },
-                velocity: { x: ghostVelocityX, y: ghostVelocityY },
-                width: ghostWidth,
-                height: ghostHeight
-            })
-        );
+        for (let i = 0; i < constants.GHOST_COUNT; i++) {
+            this.ghosts.push(
+                new Ghost({
+                    position: { x, y },
+                    velocity: { x: ghostVelocityX, y: ghostVelocityY },
+                    width: ghostWidth,
+                    height: ghostHeight,
+                    color: constants.GHOST_COLORS[i],
+                    promixityRadius: {
+                        x: constants.GHOST_MOVEMENT.PROMIXITY_RADIUS_PERC * this.canvas.width,
+                        y: constants.GHOST_MOVEMENT.PROMIXITY_RADIUS_PERC * this.canvas.height
+                    }
+                })
+            );
+        }
     }
 
     // Generate and Resize all game objects
@@ -139,7 +153,9 @@ class Game {
             pellet.draw(ctx);
         });
         this.ghosts.forEach((ghost) => {
-            ghost.draw(ctx)
+            ghost.draw(ctx, {
+                showProximity: constants.GHOST_MOVEMENT.SHOW_PROXIMITY
+            });
         });
         this.player.draw(ctx);
     }

@@ -51,8 +51,7 @@ class PlayerController {
         const rowOffset = { up: -1, down: 1, left: 0, right: 0 };
         const colOffset = { up: 0, down: 0, left: -1, right: 1 };
 
-        const playerRow = Math.floor(player.position.y / map.cellHeight);
-        const playerCol = Math.floor(player.position.x / map.cellWidth);
+        const { row: playerRow, col: playerCol } = this.game.map.getArrayIndicesForCanvasPosition(player.position);
 
         const newRow = playerRow + (rowOffset[direction] || 0);
         const newCol = playerCol + (colOffset[direction] || 0);
