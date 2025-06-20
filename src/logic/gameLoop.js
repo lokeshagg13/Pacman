@@ -10,6 +10,7 @@ function handleResize() {
 
 // Handle key press
 function handleKeyDown(e) {
+    if (game.isOnHold) return;
     if (e.key in game.playerController.keyState) {
         e.preventDefault();
         game.playerController.keyState[e.key] = true;
@@ -19,6 +20,7 @@ function handleKeyDown(e) {
 
 // Handle key up
 function handleKeyUp(e) {
+    if (game.isOnHold) return;
     if (e.key in game.playerController.keyState) {
         e.preventDefault();
         game.playerController.keyState[e.key] = false;
@@ -45,7 +47,7 @@ export function initGame(gameCanvas, stateHandlers) {
 
         game.generateAndResizeGameObjects();
         animationFrameId = requestAnimationFrame(gameLoop);
-        game.animateJailBars();
+        game.runJailBarsAnimation();
 
         window.addEventListener('resize', handleResize);
         window.addEventListener('keydown', handleKeyDown);

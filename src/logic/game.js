@@ -11,6 +11,7 @@ class Game {
     constructor(canvas, stateHandlers) {
         // Basic Game Config
         this.canvas = canvas;
+        this.isOnHold = false;
 
         // Game Objects
         this.blueprint = Blueprint.fetch();
@@ -23,8 +24,11 @@ class Game {
         this.playerController = new PlayerController(this);
         this.ghostController = new GhostController(this);
 
-        // Score Handling Functions
+        // Score Handling Function
         this.incrementScore = stateHandlers.incrementScore;
+
+        // Lives Handling Function
+        this.decrementLives = stateHandlers.decrementLives;
     }
 
     // Create and Resize pellets based on map's cell dimensions
@@ -125,6 +129,13 @@ class Game {
         this.spawnAndResizeGhosts(cellWidth, cellHeight);
     }
 
+    // Reset game after player dies and lives are remaining
+    resetGame() {
+        this.spawnAndResizePlayer(this.map.cellWidth, this.map.cellHeight);
+        this.spawnAndResizeGhosts(this.map.cellWidth, this.map.cellHeight);
+        this.runJailBarsAnimation();
+    }
+
     // Checks and removes any pellets that collide with the player
     checkPelletsCollision() {
         this.pellets = this.pellets.filter(pellet => {
@@ -136,8 +147,24 @@ class Game {
         });
     }
 
+    // Checks for ghost colliding with the player
+    checkGhostsCollision() {
+        this.ghosts.forEach(ghost => {
+            if (ghost.isCollidingWithPlayer(this.player)) {
+                this.isOnHold = true;
+                this.player.runDyingAnimation(() => {
+                    const gameOn = this.decrementLives();
+                    if (gameOn) {
+                        this.resetGame();
+                        this.isOnHold = false;
+                    }
+                });
+            }
+        });
+    }
+
     // Animate Jail Bars
-    animateJailBars() {
+    runJailBarsAnimation() {
         let toggleCount = 0;
         const interval = setInterval(() => {
             const show = toggleCount % 2 === 0;
@@ -154,10 +181,14 @@ class Game {
 
     // Update all the game objects
     updateGameObjects() {
+        // When player dies, game is on hold until reset for next round
+        if (this.isOnHold) return;
+
         this.player.updateMouthAnimation();
         this.playerController.update();
         this.ghostController.update();
         this.checkPelletsCollision();
+        this.checkGhostsCollision();
     }
 
     // Draw all the game objects

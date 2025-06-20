@@ -10,6 +10,7 @@ class Player {
             y: radius.y * 0.8
         };
         this.state = null;
+        this.dyingAngles = null;
 
         // Mouth animation properties
         this.mouthRate = 1; // Range: 0 (closed) to 1 (fully open)
@@ -96,9 +97,37 @@ class Player {
         }
     }
 
+    // Animate the player for dying
+    runDyingAnimation(callback) {
+        let currentStartAngle = (-90 * Math.PI) / 180;
+        let currentEndAngle = (270 * Math.PI) / 180;
+        const targetAngle = (90 * Math.PI) / 180;
+        const step = (2.5 * Math.PI) / 180;
+
+        // Update the dying state for the player
+        this.state = "dying";
+
+        const animate = () => {
+            if (currentStartAngle >= targetAngle) {
+                this.state = null;
+                if (typeof callback === "function") {
+                    callback();
+                }
+                return;
+            }
+
+            currentStartAngle += step;
+            currentEndAngle -= step;
+
+            this.dyingAngles = { startAngle: currentStartAngle, endAngle: currentEndAngle };
+            requestAnimationFrame(animate);
+        };
+        animate();
+    }
+
     // Draw the pacman player
     draw(ctx) {
-        const { startAngle, endAngle } = this.getMouthingAngles();
+        const { startAngle, endAngle } = this.state === "dying" ? this.dyingAngles : this.getMouthingAngles();
 
         // Draw Pacman
         ctx.save();

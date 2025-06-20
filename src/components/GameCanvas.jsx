@@ -14,6 +14,7 @@ function GameCanvas() {
     resizeCanvas();
     initGame(gameContext.gameCanvasRef.current, {
       incrementScore: gameContext.incrementScore,
+      decrementLives: gameContext.decrementLives,
     });
     window.addEventListener("resize", () => resizeCanvas());
     return () =>

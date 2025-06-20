@@ -1,10 +1,10 @@
 import GameCanvas from "./GameCanvas";
-import ScoreBoard from "./ScoreBoard";
+import GameBoard from "./gameboard/GameBoard";
 
 function MainPanel() {
   return (
     <div>
-      <ScoreBoard />
+      <GameBoard />
       <GameCanvas />
     </div>
   );

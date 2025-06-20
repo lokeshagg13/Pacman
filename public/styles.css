@@ -34,18 +34,19 @@
     height: 100vh;
   }
 
-  /* #region - For ScoreBoard Component*/
-  .scoreboard-container {
+  /* #region - For Game Board Component*/
+  .game-board-container {
     width: 100%;
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     align-items: center;
-    background-color: #1a1a1a; 
+    background-color: #1a1a1a;
     padding: 0.5rem;
     border-radius: 10px;
     box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.8);
   }
 
+  .lives-section,
   .score-section {
     display: flex;
     align-items: center;
@@ -53,11 +54,12 @@
     font-family: "Roboto", sans-serif;
   }
 
+  .lives-label,
   .score-label {
     font-size: 1.5rem;
     font-weight: 600;
     text-transform: uppercase;
-    color: #ffcc00; 
+    color: #ffcc00;
   }
 
   .score-value {
@@ -67,6 +69,17 @@
     padding: 0.5rem 1rem;
     border-radius: 50%;
     background: linear-gradient(90deg, #4caf50 30%, #81c784 100%);
+  }
+
+  .lives-figures {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .lives-figures img {
+    width: 2rem;
+    height: auto;
   }
   /* #endregion */
 }

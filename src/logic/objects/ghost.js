@@ -7,7 +7,7 @@ class Ghost {
         this.color = color;
         this.promixityRadius = promixityRadius;
         this.state = null;
-        
+
         // Initializing instance variables which are used in ghost controller
         this.randomSteps = 0;
         this.randomDirection = null;
@@ -70,6 +70,39 @@ class Ghost {
         if (this.state === "right") this.position.x += this.velocity.x;
     }
 
+    isCollidingWithPlayer(player) {
+        const playerCenterX = player.position.x;
+        const playerCenterY = player.position.y;
+        const playerRadiusX = player.radius.x;
+        const playerRadiusY = player.radius.y;
+
+        const ghostBounds = this.getCurrentBoundingPositions();
+        const sideCenters = [
+            {
+                x: (ghostBounds.left + ghostBounds.right) / 2,
+                y: ghostBounds.top
+            },
+            {
+                x: (ghostBounds.left + ghostBounds.right) / 2,
+                y: ghostBounds.bottom
+            },
+            {
+                x: ghostBounds.left,
+                y: (ghostBounds.top + ghostBounds.bottom) / 2
+            },
+            {
+                x: ghostBounds.right,
+                y: (ghostBounds.top + ghostBounds.bottom) / 2
+            },
+        ];
+
+        return sideCenters.some(({ x, y }) => {
+            const normalizedX = (x - playerCenterX) / playerRadiusX;
+            const normalizedY = (y - playerCenterY) / playerRadiusY;
+            return (normalizedX ** 2 + normalizedY ** 2) <= 1;
+        });
+    }
+
     // Draw the ghost
     draw(ctx, { showProximity = null }) {
         const { top, left } = this.getCurrentBoundingPositions();
@@ -78,8 +111,8 @@ class Ghost {
 
         // Draw promixity circle if required
         if (showProximity) {
-            const {x, y} = this.position;
-            const {x: prX, y: prY} = this.promixityRadius;
+            const { x, y } = this.position;
+            const { x: prX, y: prY } = this.promixityRadius;
             ctx.save();
             ctx.beginPath();
             ctx.ellipse(x, y, prX, prY, 0, 0, Math.PI * 2);
