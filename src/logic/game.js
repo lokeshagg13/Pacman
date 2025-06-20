@@ -136,6 +136,22 @@ class Game {
         });
     }
 
+    // Animate Jail Bars
+    animateJailBars() {
+        let toggleCount = 0;
+        const interval = setInterval(() => {
+            const show = toggleCount % 2 === 0;
+            this.map.toggleJailBars(show);
+            this.draw();
+
+            toggleCount++;
+            if (toggleCount === 7) {
+                this.map.toggleJailBars(false);
+                clearInterval(interval);
+            }
+        }, 500);
+    }
+
     // Update all the game objects
     updateGameObjects() {
         this.player.updateMouthAnimation();

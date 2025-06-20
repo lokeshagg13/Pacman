@@ -2,9 +2,9 @@ import constants from "../../store/constants";
 import blueprints from "./data/blueprints.json";
 
 class Blueprint {
+    static jailSymbol = constants.JAIL_SYMBOL;
     static spawnSymbols = Object.values(constants.SPAWN_SYMBOL);
-
-    static movableSymbols = Blueprint.spawnSymbols.concat(['.']);
+    static movableSymbols = Blueprint.spawnSymbols.concat(['.', '*']);
 
     static fetch() {
         return blueprints[1].blueprint;

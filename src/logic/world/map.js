@@ -9,6 +9,7 @@ class Map {
         this.cellWidth = cellWidth;
         this.cellHeight = cellHeight;
         this.boundaries = [];
+        this.jailCells = []; // Track position of all jail bar cells
         this.#generateMap();
     }
 
@@ -16,10 +17,12 @@ class Map {
     #generateMap() {
         this.blueprint.forEach((row, i) => {
             row.forEach((symbol, j) => {
+                if (symbol === Blueprint.jailSymbol) {
+                    this.jailCells.push({ row: i, col: j });
+                }
                 if (Blueprint.movableSymbols.includes(symbol)) {
                     return;
                 }
-
                 const x = this.cellWidth * j;
                 const y = this.cellHeight * i;
                 this.boundaries.push(
@@ -31,6 +34,34 @@ class Map {
                     })
                 );
             });
+        });
+    }
+
+    // Toggle Jail Bar Visibility
+    toggleJailBars(show) {
+        this.jailCells.forEach(({ row, col }) => {
+            const { x, y } = this.getCanvasPositionForArrayIndices({
+                position: { row, col },
+                offset: { x: 0, y: 0 }
+            });
+            if (show) {
+                // Reappear jail bars
+                this.blueprint[row][col] = "J";
+                this.boundaries.push(
+                    new Boundary({
+                        symbol: "J",
+                        position: { x, y },
+                        width: this.cellWidth,
+                        height: this.cellHeight
+                    })
+                );
+            } else {
+                // Disappear jail bars
+                this.blueprint[row][col] = "*";
+                this.boundaries = this.boundaries.filter((boundary) => {
+                    return !(boundary.position.x === x && boundary.position.y === y);
+                });
+            }
         });
     }
 

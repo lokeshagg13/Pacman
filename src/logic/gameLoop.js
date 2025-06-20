@@ -45,6 +45,7 @@ export function initGame(gameCanvas, stateHandlers) {
 
         game.generateAndResizeGameObjects();
         animationFrameId = requestAnimationFrame(gameLoop);
+        game.animateJailBars();
 
         window.addEventListener('resize', handleResize);
         window.addEventListener('keydown', handleKeyDown);

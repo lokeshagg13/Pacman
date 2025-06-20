@@ -22,7 +22,8 @@ const constants = {
     SPAWN_SYMBOL: {
         PLAYER_ORIGIN: 'O',
         GHOST_ORIGIN: 'G'
-    }
+    },
+    JAIL_SYMBOL: 'J'
 }
 
 export default constants;

@@ -14,6 +14,7 @@ import CapRightImage from "../../images/assets/capRight.svg";
 import CapTopImage from "../../images/assets/capTop.svg";
 import CapBottomImage from "../../images/assets/capBottom.svg";
 import BlockImage from "../../images/assets/block.svg";
+import JailBarsImage from "../../images/assets/jailBars.svg";
 
 class Boundary {
     constructor({ symbol, position, width, height }) {
@@ -59,6 +60,7 @@ class Boundary {
             case '6': return createImage(PipeConnectorRightImage);
             case '7': return createImage(PipeConnectorBottomImage);
             case '8': return createImage(PipeConnectorLeftImage);
+            case 'J': return createImage(JailBarsImage);
             default: return createImage(PipeHorizontalImage);
         }
     }
