@@ -133,6 +133,8 @@ class Game {
     resetGame() {
         this.spawnAndResizePlayer(this.map.cellWidth, this.map.cellHeight);
         this.spawnAndResizeGhosts(this.map.cellWidth, this.map.cellHeight);
+        this.playerController = new PlayerController(this);
+        this.ghostController = new GhostController(this);
         this.runJailBarsAnimation();
     }
 
@@ -153,11 +155,9 @@ class Game {
             if (ghost.isCollidingWithPlayer(this.player)) {
                 this.isOnHold = true;
                 this.player.runDyingAnimation(() => {
-                    const gameOn = this.decrementLives();
-                    if (gameOn) {
-                        this.resetGame();
-                        this.isOnHold = false;
-                    }
+                    this.decrementLives();
+                    this.resetGame();
+                    this.isOnHold = false;
                 });
             }
         });

@@ -35,11 +35,7 @@ export function GameContextProvider(props) {
         setScore(0);
         setLives(constants.TOTAL_LIVES);
         if (playerType && constants.PLAYER_TYPES.includes(playerType)) setPlayerType(playerType);
-        if (endGameFuncRef.current) {
-            endGameFuncRef.current();
-            endGameFuncRef.current = null;
-        }
-
+        
         const { startGame, pauseGame, resumeGame, endGame } = initGame(gameCanvasRef.current, playerType, {
             incrementScore,
             decrementLives,
@@ -87,8 +83,6 @@ export function GameContextProvider(props) {
 
     function decrementLives() {
         setLives((prevLives) => prevLives - 1);
-        if (lives === 0) return false;
-        return true;
     }
 
     const currentGameContext = {
