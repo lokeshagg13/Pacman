@@ -5,6 +5,7 @@ import GamePanel from "./game-panel/GamePanel";
 import StartModal from "./modals/StartModal";
 import WinnerModal from "./modals/WinnerModal";
 import GameOverModal from "./modals/GameOverModal";
+import PausedModal from "./modals/PausedModal";
 
 function MainPanel() {
   const gameContext = useContext(GameContext);
@@ -35,6 +36,9 @@ function MainPanel() {
       {gameContext.gameStatus === "completed" && !gameContext.isWinner && (
         <GameOverModal />
       )}
+
+      {/* Paused Overlay */}
+      {gameContext.gameStatus === "paused" && <PausedModal />}
     </div>
   );
 }

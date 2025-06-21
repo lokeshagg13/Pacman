@@ -42,7 +42,7 @@ const constants = {
         HEIGHT_PERC: 0.8,   // w.r.t CELL width and height
         EYES: {
             COLOR: "white",
-            RADIUS_PERC: 0.3,    // w.r.t GHOST WIDTH ONLY
+            RADIUS_PERC: 0.2,    // w.r.t GHOST WIDTH ONLY
             OFFSET_PERC: {
                 X: 0.2,     // w.r.t GHOST WIDTH ONLY
                 Y: 0.3      // w.r.t GHOST HEIGHT ONLY

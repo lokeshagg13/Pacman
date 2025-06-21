@@ -10,6 +10,10 @@
     background: var(--color-dark-blue);
   }
 
+  .bg-trans-black {
+    background: rgba(0, 0, 0, 0.5);
+  }
+
   .img-fit {
     max-width: 90%;
     object-fit: contain;
@@ -162,23 +166,23 @@
     box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.8);
   }
 
-  .lives-section,
-  .score-section {
+  .game-board-container .lives-section,
+  .game-board-container .score-section {
     display: flex;
     align-items: center;
     gap: 1rem;
     font-family: "Roboto", sans-serif;
   }
 
-  .lives-label,
-  .score-label {
+  .game-board-container .lives-label,
+  .game-board-container .score-label {
     font-size: 1.5rem;
     font-weight: 600;
     text-transform: uppercase;
     color: #ffcc00;
   }
 
-  .score-value {
+  .game-board-container .score-value {
     font-size: 1.7rem;
     font-weight: 700;
     line-height: 1;
@@ -187,15 +191,82 @@
     background: linear-gradient(90deg, #4caf50 30%, #81c784 100%);
   }
 
-  .lives-figures {
+  .game-board-container .lives-figures {
     display: flex;
     align-items: center;
     gap: 1rem;
   }
 
-  .lives-figures img {
+  .game-board-container .lives-figures img {
     width: 2rem;
     height: auto;
+  }
+
+  @media (max-width: 425px) {
+    .game-board-container .lives-label,
+    .game-board-container .score-label {
+      font-size: 0.8rem;
+      font-weight: 400;
+    }
+
+    .game-board-container .score-value {
+      font-size: 1rem;
+      font-weight: 700;
+      line-height: 1;
+      padding: 0.5rem 0.5rem;
+    }
+
+    .game-board-container .lives-figures {
+      gap: 0.5rem;
+    }
+
+    .game-board-container .lives-figures img {
+      width: 1rem;
+    }
+  }
+  /* #endregion */
+
+  /* #region - For Game Controls Component */
+  .game-console-container {
+    display: flex;
+    width: 100%;
+    max-width: 1000px;
+    background-color: #1a1a1a;
+    padding: 0.5rem;
+    border-radius: 10px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.8);
+  }
+
+  .game-console-container .pause-btn,
+  .game-console-container .quit-btn {
+    width: 100px;
+    height: 60px;
+    background: linear-gradient(145deg, #004aad, #007bff);
+    border: 2px solid #004aad;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    color: white;
+    font-size: 1.2rem;
+    font-weight: 400;
+    border-radius: 8px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+    transition: background 0.3s ease;
+  }
+
+  .game-console-container .pause-btn:not(:disabled):hover,
+  .game-console-container .quit-btn:not(:disabled):hover {
+    background: linear-gradient(145deg, #003d7a, #005bb5);
+  }
+
+  @media (max-width: 425px) {
+    .game-console-container .pause-btn,
+    .game-console-container .quit-btn {
+      width: 80px;
+      height: 35px;
+      font-size: 1rem;
+    }
   }
   /* #endregion */
 
