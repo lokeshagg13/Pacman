@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import GameContext from "../../store/gameContext";
+import GameContext from "../../../store/gameContext";
 
 function Score() {
   const gameContext = useContext(GameContext);

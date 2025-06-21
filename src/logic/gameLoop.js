@@ -27,22 +27,25 @@ function handleKeyUp(e) {
     }
 }
 
-export function initGame(gameCanvas, stateHandlers) {
+export function initGame(gameCanvas, playerType, stateHandlers) {
     game = new Game(gameCanvas, stateHandlers);
 
     const frameDuration = 1000 / constants.TARGET_FPS;
     let lastTime = performance.now();
     let animationFrameId;
+    let isPaused = false;
 
     function startGameLoop() {
         function gameLoop(currentTime) {
-            const deltaTime = currentTime - lastTime;
-            if (deltaTime >= frameDuration) {
-                lastTime = currentTime;
-                game.updateGameObjects();
-                game.draw();
+            if (!isPaused) {
+                const deltaTime = currentTime - lastTime;
+                if (deltaTime >= frameDuration) {
+                    game.updateGameObjects();
+                    game.draw();
+                    lastTime = currentTime;
+                }
+                animationFrameId = requestAnimationFrame(gameLoop);
             }
-            animationFrameId = requestAnimationFrame(gameLoop);
         }
 
         game.generateAndResizeGameObjects();
@@ -54,8 +57,34 @@ export function initGame(gameCanvas, stateHandlers) {
         window.addEventListener('keyup', handleKeyUp);
     }
 
-    startGameLoop();
+    // Start Game
+    function startGame() {
+        isPaused = false;
+        lastTime = performance.now();
+        startGameLoop();
+    }
 
+    // Pause Game
+    function pauseGame() {
+        if (!isPaused) {
+            isPaused = true;
+            cancelAnimationFrame(animationFrameId);
+            window.removeEventListener("resize", handleResize);
+            window.removeEventListener("keydown", handleKeyDown);
+            window.removeEventListener("keyup", handleKeyUp);
+        }
+    }
+
+    // Resume Game
+    function resumeGame() {
+        if (isPaused) {
+            isPaused = false;
+            lastTime = performance.now();
+            animationFrameId = requestAnimationFrame(startGameLoop);
+        }
+    }
+
+    // End Game
     function endGame() {
         cancelAnimationFrame(animationFrameId);
         window.removeEventListener("resize", handleResize);
@@ -64,6 +93,9 @@ export function initGame(gameCanvas, stateHandlers) {
     }
 
     return {
+        startGame,
+        pauseGame,
+        resumeGame,
         endGame
     }
 }

@@ -479,6 +479,9 @@
   .h-full {
     height: 100%;
   }
+  .h-inherit {
+    height: inherit;
+  }
   .h-screen-in {
     height: calc(100vh - 128px);
   }
@@ -1016,6 +1019,9 @@
   }
   .uppercase {
     text-transform: uppercase;
+  }
+  .capitalize {
+    text-transform: capitalize;
   }
   .opacity-0 {
     opacity: 0%;

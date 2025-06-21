@@ -34,7 +34,122 @@
     height: 75vh;
   }
 
-  /* #region - For Game Board Component*/
+  /* #region -  For General Modal Component */
+  .modal-img-fit {
+    max-width: 500px;
+    object-fit: contain;
+  }
+
+  .flex-box {
+    flex: 1 1 calc(40% - 1rem);
+    min-width: 200px;
+  }
+
+  .no-emoji-style {
+    font-family: "Courier New", monospace;
+  }
+
+  @media (max-width: 505px) {
+    .flex-box {
+      flex: 1 1 100%;
+    }
+
+    .md\:w-full {
+      width: 100%;
+    }
+
+    .key-adjust {
+      max-width: 242px;
+    }
+
+    .sm\:justify-between {
+      justify-content: space-between;
+    }
+  }
+  /* #endregion */
+
+  /* #region - For Winner Modal & Game Over Modal Component */
+  .winner-modal,
+  .game-over-modal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    gap: 1rem;
+    width: 100%;
+    max-width: 400px;
+    margin-top: 2rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .winner-modal .winner-image,
+  .game-over-modal .game-over-image {
+    width: 7rem;
+  }
+
+  .winner-modal .winner-title,
+  .game-over-modal .game-over-title {
+    font-size: 2rem;
+    text-align: center;
+    font-weight: bold;
+    letter-spacing: 0.05rem;
+    text-transform: uppercase;
+  }
+
+  .winner-modal .winner-title {
+    color: #1e3a8a;
+  }
+
+  .game-over-modal .game-over-title {
+    color: #800000;
+  }
+
+  .game-over-modal .game-over-subt {
+    font-size: 1.2rem;
+    text-align: center;
+    font-weight: 300;
+    letter-spacing: 0.05rem;
+  }
+
+  /* #endregion */
+
+  /* #region - For Game Form Component */
+  .game-form .control-btn {
+    display: inline-block;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .game-form .control-btn.start-game-btn,
+  .game-form .control-btn.quit-btn {
+    background-color: #2980b9;
+  }
+
+  .game-form .control-btn.start-game-btn:hover,
+  .game-form .control-btn.quit-btn:hover {
+    background-color: #1f6391;
+    transform: scale(1.05);
+  }
+
+  .game-form .control-btn.enter-simulator-btn {
+    background-color: #27ae60;
+  }
+
+  .game-form .control-btn.enter-simulator-btn:hover {
+    background-color: #1e8c4d;
+    transform: scale(1.05);
+  }
+  /* #endregion */
+
+  /* #region - For Game Board Component */
   .game-board-container {
     width: 100%;
     max-width: 1000px;

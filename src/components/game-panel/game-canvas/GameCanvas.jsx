@@ -1,7 +1,6 @@
 import { useContext, useEffect } from "react";
-import { initGame } from "../logic/gameLoop";
-import GameContext from "../store/gameContext";
-import constants from "../store/constants";
+import GameContext from "../../../store/gameContext";
+import constants from "../../../store/constants";
 
 function GameCanvas() {
   const gameContext = useContext(GameContext);
@@ -11,10 +10,6 @@ function GameCanvas() {
     const aspectRatio = constants.ASPECT_RATIO;
     gameCanvas.height = 1180;
     gameCanvas.width = gameCanvas.height * aspectRatio;
-    initGame(gameContext.gameCanvasRef.current, {
-      incrementScore: gameContext.incrementScore,
-      decrementLives: gameContext.decrementLives,
-    });
     // eslint-disable-next-line
   }, []);
 

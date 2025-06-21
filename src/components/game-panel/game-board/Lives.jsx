@@ -1,13 +1,13 @@
 import { useContext, useEffect } from "react";
-import GameContext from "../../store/gameContext";
-import PacmanImage from "../../images/assets/pacman.svg";
+import GameContext from "../../../store/gameContext";
+import PacmanImage from "../../../images/pacman/pacman.svg";
 
 function Lives() {
   const gameContext = useContext(GameContext);
 
   useEffect(() => {
     if (gameContext.lives <= 0) {
-      // Game over
+      gameContext.handleEndGame(false);
     }
   }, [gameContext.lives]);
 
