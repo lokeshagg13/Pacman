@@ -8,6 +8,12 @@ class PlayerController {
 
     constructor(game) {
         this.game = game;
+        this.swipeState = {
+            up: false,
+            down: false,
+            left: false,
+            right: false
+        };
         this.keyState = {
             w: false,
             s: false,
@@ -16,9 +22,19 @@ class PlayerController {
             ArrowUp: false,
             ArrowDown: false,
             ArrowLeft: false,
-            ArrowRight: false,
-            lastKey: ''
+            ArrowRight: false
         };
+        this.lastActionType = null; // key / swipe
+        this.lastActionValue = "";
+    }
+
+    // Reset swipe states
+    resetSwipeStates() {
+        for (let dir in this.swipeState) {
+            if (this.swipeState.hasOwnProperty(dir)) {
+                this.swipeState[dir] = false;
+            }
+        }
     }
 
     // Checks for player's movement based on current position and next potential positions
@@ -75,21 +91,31 @@ class PlayerController {
         );
     }
 
-    // Update player's movement state based on key presses
+    // Update player's movement state based on key presses or swipes
     updatePlayerMovement() {
-        const directionKeys = {
-            w: "up", ArrowUp: "up",
-            s: "down", ArrowDown: "down",
-            a: "left", ArrowLeft: "left",
-            d: "right", ArrowRight: "right"
-        };
-
-        const direction = directionKeys[this.keyState.lastKey];
-        if (
-            direction && this.keyState[this.keyState.lastKey] &&
-            this.isOverallPlayerMovementValid(direction)
-        ) {
-            this.game.player.changeState(direction);
+        if (this.lastActionType === "key") {
+            const directionKeys = {
+                w: "up", ArrowUp: "up",
+                s: "down", ArrowDown: "down",
+                a: "left", ArrowLeft: "left",
+                d: "right", ArrowRight: "right"
+            };
+            const direction = directionKeys[this.lastActionValue];
+            if (
+                direction && this.keyState[this.lastActionValue] &&
+                this.isOverallPlayerMovementValid(direction)
+            ) {
+                this.game.player.changeState(direction);
+            }
+        } else if (this.lastActionType === "swipe") {
+            const direction = this.lastActionValue;
+            if (
+                direction && this.swipeState[this.lastActionValue] && this.isOverallPlayerMovementValid(direction)
+            ) {
+                this.game.player.changeState(direction);
+            } else {
+                this.resetSwipeStates();
+            }
         }
     }
 

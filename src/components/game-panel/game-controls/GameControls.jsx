@@ -29,7 +29,7 @@ function GameControls() {
   }, [gameContext]);
 
   return (
-    <div className="game-console-container justify-between">
+    <div className="game-controls-container justify-between">
       <button
         className={`pause-btn ${
           gameContext.gameStatus === "paused" ? "z-100" : "z-0"

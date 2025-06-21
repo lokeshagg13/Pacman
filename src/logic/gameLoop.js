@@ -9,7 +9,8 @@ function handleKeyDown(e) {
     if (e.key in game.playerController.keyState) {
         e.preventDefault();
         game.playerController.keyState[e.key] = true;
-        game.playerController.keyState.lastKey = e.key;
+        game.playerController.lastActionType = "key";
+        game.playerController.lastActionValue = e.key;
     }
 }
 
@@ -19,6 +20,18 @@ function handleKeyUp(e) {
     if (e.key in game.playerController.keyState) {
         e.preventDefault();
         game.playerController.keyState[e.key] = false;
+        game.playerController.lastActionType = null;
+        game.playerController.lastActionValue = "";
+    }
+}
+
+export function handleSwipeOnCanvas(direction) {
+    if (game.isOnHold) return;
+    if (direction in game.playerController.swipeState) {
+        game.playerController.resetSwipeStates();
+        game.playerController.swipeState[direction] = true;
+        game.playerController.lastActionType = "swipe";
+        game.playerController.lastActionValue = direction;
     }
 }
 
@@ -30,7 +43,7 @@ export function initGame(gameCanvas, playerType, stateHandlers) {
     let animationFrameId;
     let isPaused = false;
 
-    function startGameLoop() {
+    function startGameLoop(resumed = false) {
         function gameLoop(currentTime) {
             if (!isPaused) {
                 const deltaTime = currentTime - lastTime;
@@ -43,8 +56,10 @@ export function initGame(gameCanvas, playerType, stateHandlers) {
             }
         }
 
-        game.generateAndResizeGameObjects();
-        game.runJailBarsAnimation();
+        if (!resumed) {
+            game.generateAndResizeGameObjects();
+            game.runJailBarsAnimation();
+        }
         animationFrameId = requestAnimationFrame(gameLoop);
 
         window.addEventListener('keydown', handleKeyDown);
@@ -55,7 +70,7 @@ export function initGame(gameCanvas, playerType, stateHandlers) {
     function startGame() {
         isPaused = false;
         lastTime = performance.now();
-        startGameLoop();
+        startGameLoop(false);
     }
 
     // Pause Game
@@ -73,7 +88,7 @@ export function initGame(gameCanvas, playerType, stateHandlers) {
         if (isPaused) {
             isPaused = false;
             lastTime = performance.now();
-            animationFrameId = requestAnimationFrame(startGameLoop);
+            startGameLoop(true);
         }
     }
 

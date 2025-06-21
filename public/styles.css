@@ -227,7 +227,7 @@
   /* #endregion */
 
   /* #region - For Game Controls Component */
-  .game-console-container {
+  .game-controls-container {
     display: flex;
     width: 100%;
     max-width: 1000px;
@@ -237,8 +237,8 @@
     box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.8);
   }
 
-  .game-console-container .pause-btn,
-  .game-console-container .quit-btn {
+  .game-controls-container .pause-btn,
+  .game-controls-container .quit-btn {
     width: 100px;
     height: 60px;
     background: linear-gradient(145deg, #004aad, #007bff);
@@ -255,14 +255,14 @@
     transition: background 0.3s ease;
   }
 
-  .game-console-container .pause-btn:not(:disabled):hover,
-  .game-console-container .quit-btn:not(:disabled):hover {
+  .game-controls-container .pause-btn:not(:disabled):hover,
+  .game-controls-container .quit-btn:not(:disabled):hover {
     background: linear-gradient(145deg, #003d7a, #005bb5);
   }
 
   @media (max-width: 425px) {
-    .game-console-container .pause-btn,
-    .game-console-container .quit-btn {
+    .game-controls-container .pause-btn,
+    .game-controls-container .quit-btn {
       width: 80px;
       height: 35px;
       font-size: 1rem;
