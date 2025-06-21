@@ -6,8 +6,8 @@ class Player {
         this.velocity = velocity;
         this.radius = radius;
         this.visualRadius = {
-            x: radius.x * 0.8,
-            y: radius.y * 0.8
+            x: constants.PLAYER.VISUAL_RADIUS_PERC * radius.x,
+            y: constants.PLAYER.VISUAL_RADIUS_PERC * radius.y
         };
         this.state = null;
         this.dyingAngles = null;
@@ -15,7 +15,7 @@ class Player {
         // Mouth animation properties
         this.mouthRate = 1; // Range: 0 (closed) to 1 (fully open)
         this.mouthDirection = -1; // 1 for opening, -1 for closing
-        this.mouthSpeed = 0.1; // Rate of change for mouth animation
+        this.mouthAnimationSpeed = constants.PLAYER.MOUTH_ANIMATION_SPEED; // Rate of change for mouth animation
     }
 
     // Change current state of the player
@@ -91,7 +91,7 @@ class Player {
 
     // Animate the mouth opening and closing
     updateMouthAnimation() {
-        this.mouthRate += this.mouthDirection * this.mouthSpeed;
+        this.mouthRate += this.mouthDirection * this.mouthAnimationSpeed;
         if (this.mouthRate >= 1 || this.mouthRate <= 0) {
             this.mouthDirection *= -1;
         }
@@ -102,7 +102,7 @@ class Player {
         let currentStartAngle = (-90 * Math.PI) / 180;
         let currentEndAngle = (270 * Math.PI) / 180;
         const targetAngle = (90 * Math.PI) / 180;
-        const step = (2.5 * Math.PI) / 180;
+        const step = constants.ANIMATIONS.DYING_PLAYER_ANIMATION_RATE;
 
         // Update the dying state for the player
         this.state = "dying";
@@ -145,7 +145,7 @@ class Player {
             endAngle
         );
         ctx.lineTo(0, 0);
-        ctx.fillStyle = "yellow";
+        ctx.fillStyle = constants.PLAYER.COLOR;
         ctx.fill();
         ctx.closePath();
         ctx.restore();

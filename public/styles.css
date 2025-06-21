@@ -198,4 +198,29 @@
     height: auto;
   }
   /* #endregion */
+
+  .rotate-0 {
+    transform: rotate(0deg);
+    transition: transform 0.5s ease;
+  }
+
+  .rotate-180 {
+    transform: rotate(180deg);
+    transition: transform 0.5s ease;
+  }
+
+  .fade-in {
+    animation: fadeInTop 0.5s ease forwards;
+  }
+
+  @keyframes fadeInTop {
+    from {
+      opacity: 0;
+      transform: translateY(-50px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 }

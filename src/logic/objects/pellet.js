@@ -1,3 +1,5 @@
+import constants from "../../store/constants";
+
 class Pellet {
     constructor({ position, radius }) {
         this.position = position;
@@ -30,7 +32,7 @@ class Pellet {
             0,
             2 * Math.PI
         );
-        ctx.fillStyle = 'white';
+        ctx.fillStyle = constants.PELLET.COLOR;
         ctx.fill();
         ctx.closePath();
     }

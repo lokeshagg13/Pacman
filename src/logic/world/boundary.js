@@ -15,6 +15,7 @@ import CapTopImage from "../../images/assets/capTop.svg";
 import CapBottomImage from "../../images/assets/capBottom.svg";
 import BlockImage from "../../images/assets/block.svg";
 import JailBarsImage from "../../images/assets/jailBars.svg";
+import constants from "../../store/constants";
 
 class Boundary {
     constructor({ symbol, position, width, height }) {
@@ -60,11 +61,11 @@ class Boundary {
             case '6': return createImage(PipeConnectorRightImage);
             case '7': return createImage(PipeConnectorBottomImage);
             case '8': return createImage(PipeConnectorLeftImage);
-            case 'J': return createImage(JailBarsImage);
+            case constants.MAP.JAIL_SYMBOL: return createImage(JailBarsImage);
             default: return createImage(PipeHorizontalImage);
         }
     }
-    
+
     draw(ctx) {
         ctx.drawImage(this.image, this.position.x, this.position.y, this.width, this.height);
     }

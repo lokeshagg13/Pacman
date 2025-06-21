@@ -9,6 +9,7 @@ function Lives() {
     if (gameContext.lives <= 0) {
       gameContext.handleEndGame(false);
     }
+    // eslint-disable-next-line
   }, [gameContext.lives]);
 
   return (

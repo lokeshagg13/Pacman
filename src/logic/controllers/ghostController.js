@@ -2,9 +2,9 @@ import constants from "../../store/constants";
 import Blueprint from "../world/blueprint";
 
 class GhostController {
-    static directions = ["up", "down", "left", "right"];
-    static rowOffset = { up: -1, down: 1, left: 0, right: 0 };
-    static colOffset = { up: 0, down: 0, left: -1, right: 1 };
+    static directions = constants.MAP.DIRECTIONS;
+    static rowOffset = constants.MAP.ROW_OFFSET;
+    static colOffset = constants.MAP.COL_OFFSET;
 
     constructor(game) {
         this.game = game;

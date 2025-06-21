@@ -34,14 +34,14 @@ class Game {
 
     // Create and Resize pellets based on map's cell dimensions
     createAndResizePellets(cellWidth, cellHeight) {
-        const pelletRadiusX = 0.08 * cellWidth;
-        const pelletRadiusY = 0.08 * cellHeight;
+        const pelletRadiusX = constants.PELLET.RADIUS_PERC * cellWidth;
+        const pelletRadiusY = constants.PELLET.RADIUS_PERC * cellHeight;
 
         this.pellets = [];
 
         this.blueprint.forEach((row, i) => {
             row.forEach((symbol, j) => {
-                if (symbol === ".") {
+                if (symbol === constants.MAP.PELLET_SYMBOL) {
                     const { x, y } = this.map.getCanvasPositionForArrayIndices({
                         position: { row: i, col: j },
                         offset: { x: 0.5, y: 0.5 }
@@ -83,8 +83,8 @@ class Game {
 
     // Spawn and Resize the ghosts based on map's cell dimensions and canvas dimensions
     spawnAndResizeGhosts(cellWidth, cellHeight) {
-        const ghostWidth = Math.floor(0.5 * cellWidth);
-        const ghostHeight = Math.floor(0.8 * cellHeight);
+        const ghostWidth = Math.floor(constants.GHOST.WIDTH_PERC * cellWidth);
+        const ghostHeight = Math.floor(constants.GHOST.HEIGHT_PERC * cellHeight);
         const ghostVelocityX = constants.GHOST.VELOCITY_PERC * this.canvas.width;
         const ghostVelocityY = constants.GHOST.VELOCITY_PERC * this.canvas.height;
         const { row, col } = Blueprint.findElementInBlueprint(
@@ -175,11 +175,12 @@ class Game {
             this.map.toggleJailBars(show);
             this.draw();
             toggleCount++;
-            if (toggleCount === 7) {
+            const maxCheck = 2 * constants.ANIMATIONS.JAIL_BARS_DISAPPEARENCE_COUNT + 1;
+            if (toggleCount === maxCheck) {
                 this.map.toggleJailBars(false);
                 clearInterval(interval);
             }
-        }, 500);
+        }, constants.ANIMATIONS.JAIL_BARS_ANIMATION_RATE);
     }
 
     // Update all the game objects

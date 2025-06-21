@@ -1,6 +1,11 @@
+import constants from "../../store/constants";
 import Blueprint from "../world/blueprint";
 
 class PlayerController {
+    static directions = constants.MAP.DIRECTIONS;
+    static rowOffset = constants.MAP.ROW_OFFSET;
+    static colOffset = constants.MAP.COL_OFFSET;
+
     constructor(game) {
         this.game = game;
         this.keyState = {
@@ -20,7 +25,7 @@ class PlayerController {
     isPositionalMovementValid(direction) {
         const { player, map } = this.game;
 
-        if (!["up", "down", "left", "right"].includes(direction)) {
+        if (!PlayerController.directions.includes(direction)) {
             return false;
         }
 
@@ -48,13 +53,10 @@ class PlayerController {
     isCellMovementValid(direction) {
         const { player, map } = this.game;
 
-        const rowOffset = { up: -1, down: 1, left: 0, right: 0 };
-        const colOffset = { up: 0, down: 0, left: -1, right: 1 };
-
         const { row: playerRow, col: playerCol } = this.game.map.getArrayIndicesForCanvasPosition(player.position);
 
-        const newRow = playerRow + (rowOffset[direction] || 0);
-        const newCol = playerCol + (colOffset[direction] || 0);
+        const newRow = playerRow + (PlayerController.rowOffset[direction] || 0);
+        const newCol = playerCol + (PlayerController.colOffset[direction] || 0);
 
         return (
             newRow >= 0 &&

@@ -1,3 +1,4 @@
+import constants from "../../store/constants";
 import Blueprint from "./blueprint";
 import Boundary from "./boundary";
 
@@ -46,10 +47,10 @@ class Map {
             });
             if (show) {
                 // Reappear jail bars
-                this.blueprint[row][col] = "J";
+                this.blueprint[row][col] = constants.MAP.JAIL_SYMBOL;
                 this.boundaries.push(
                     new Boundary({
-                        symbol: "J",
+                        symbol: constants.MAP.JAIL_SYMBOL,
                         position: { x, y },
                         width: this.cellWidth,
                         height: this.cellHeight
@@ -57,7 +58,7 @@ class Map {
                 );
             } else {
                 // Disappear jail bars
-                this.blueprint[row][col] = "*";
+                this.blueprint[row][col] = constants.MAP.EMPTY_SPACE_SYMBOL;
                 this.boundaries = this.boundaries.filter((boundary) => {
                     return !(boundary.position.x === x && boundary.position.y === y);
                 });
