@@ -7,7 +7,7 @@ function GameCanvas() {
 
   useEffect(() => {
     const gameCanvas = gameContext.gameCanvasRef.current;
-    const aspectRatio = constants.ASPECT_RATIO;
+    const aspectRatio = constants.MAP.ASPECT_RATIO;
     gameCanvas.height = 1180;
     gameCanvas.width = gameCanvas.height * aspectRatio;
     // eslint-disable-next-line

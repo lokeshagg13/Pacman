@@ -8,8 +8,8 @@ class GhostController {
 
     constructor(game) {
         this.game = game;
-        this.randomStepLimit = constants.GHOST_MOVEMENT.RANDOM_STEP_LIMIT;
-        this.pathUpdateInterval = constants.GHOST_MOVEMENT.PATH_UPDATE_INTERVAL;
+        this.randomStepLimit = constants.GHOST.MOVEMENT.RANDOM_STEP_LIMIT;
+        this.pathUpdateInterval = constants.GHOST.MOVEMENT.PATH_UPDATE_INTERVAL;
         this.lastPathUpdateTime = null;
     }
 

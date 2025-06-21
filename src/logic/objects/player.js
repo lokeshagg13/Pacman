@@ -73,7 +73,7 @@ class Player {
 
     // Calculate angles for mouth opening of the pacman player and adjust mouth angles based on state and mouthRate
     getMouthingAngles() {
-        const currentOpening = constants.PLAYER_MAX_MOUTH_OPENING * this.mouthRate;
+        const currentOpening = constants.PLAYER.MAX_MOUTH_OPENING * this.mouthRate;
         let startAngle = 0 * Math.PI + currentOpening;
         let endAngle = 2 * Math.PI - currentOpening;
         if (this.state === "down") {

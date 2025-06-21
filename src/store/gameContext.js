@@ -20,9 +20,9 @@ const GameContext = createContext({
 
 export function GameContextProvider(props) {
     const [gameStatus, setGameStatus] = useState(null);
-    const [playerType, setPlayerType] = useState(constants.PLAYER_TYPES[0]);
+    const [playerType, setPlayerType] = useState(constants.PLAYER.TYPES[0]);
     const [score, setScore] = useState(0);
-    const [lives, setLives] = useState(constants.TOTAL_LIVES);
+    const [lives, setLives] = useState(constants.PLAYER.TOTAL_LIVES);
     const [isWinner, setIsWinner] = useState(false);
 
     const gameCanvasRef = useRef(null);
@@ -33,8 +33,8 @@ export function GameContextProvider(props) {
     function handleStartGame(playerType) {
         setGameStatus("running");
         setScore(0);
-        setLives(constants.TOTAL_LIVES);
-        if (playerType && constants.PLAYER_TYPES.includes(playerType)) setPlayerType(playerType);
+        setLives(constants.PLAYER.TOTAL_LIVES);
+        if (playerType && constants.PLAYER.TYPES.includes(playerType)) setPlayerType(playerType);
         
         const { startGame, pauseGame, resumeGame, endGame } = initGame(gameCanvasRef.current, playerType, {
             incrementScore,

@@ -25,7 +25,7 @@ function handleKeyUp(e) {
 export function initGame(gameCanvas, playerType, stateHandlers) {
     game = new Game(gameCanvas, stateHandlers);
 
-    const frameDuration = 1000 / constants.TARGET_FPS;
+    const frameDuration = 1000 / constants.GAME.TARGET_FPS;
     let lastTime = performance.now();
     let animationFrameId;
     let isPaused = false;

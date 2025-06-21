@@ -28,7 +28,7 @@ class Game {
         this.incrementScore = stateHandlers.incrementScore;
 
         // Lives Handling Function
-        this.lives = constants.TOTAL_LIVES; // Local variable
+        this.lives = constants.PLAYER.TOTAL_LIVES; // Local variable
         this.decrementLives = stateHandlers.decrementLives;
     }
 
@@ -61,12 +61,12 @@ class Game {
 
     // Spawn and Resize the pacman player based on map's cell dimensions and canvas dimensions
     spawnAndResizePlayer(cellWidth, cellHeight) {
-        const playerRadiusX = Math.floor(0.4 * cellWidth);
-        const playerRadiusY = Math.floor(0.4 * cellHeight);
-        const playerVelocityX = constants.PLAYER_VELOCITY_PERC * this.canvas.width;
-        const playerVelocityY = constants.PLAYER_VELOCITY_PERC * this.canvas.height;
+        const playerRadiusX = Math.floor(constants.PLAYER.RADIUS_PERC * cellWidth);
+        const playerRadiusY = Math.floor(constants.PLAYER.RADIUS_PERC * cellHeight);
+        const playerVelocityX = constants.PLAYER.VELOCITY_PERC * this.canvas.width;
+        const playerVelocityY = constants.PLAYER.VELOCITY_PERC * this.canvas.height;
         const { row, col } = Blueprint.findElementInBlueprint(
-            constants.SPAWN_SYMBOL.PLAYER_ORIGIN,
+            constants.MAP.SPAWN_SYMBOL.PLAYER_ORIGIN,
             this.blueprint
         );
         const { x, y } = this.map.getCanvasPositionForArrayIndices({
@@ -85,10 +85,10 @@ class Game {
     spawnAndResizeGhosts(cellWidth, cellHeight) {
         const ghostWidth = Math.floor(0.5 * cellWidth);
         const ghostHeight = Math.floor(0.8 * cellHeight);
-        const ghostVelocityX = constants.GHOST_VELOCITY_PERC * this.canvas.width;
-        const ghostVelocityY = constants.GHOST_VELOCITY_PERC * this.canvas.height;
+        const ghostVelocityX = constants.GHOST.VELOCITY_PERC * this.canvas.width;
+        const ghostVelocityY = constants.GHOST.VELOCITY_PERC * this.canvas.height;
         const { row, col } = Blueprint.findElementInBlueprint(
-            constants.SPAWN_SYMBOL.GHOST_ORIGIN,
+            constants.MAP.SPAWN_SYMBOL.GHOST_ORIGIN,
             this.blueprint
         );
         const { x, y } = this.map.getCanvasPositionForArrayIndices({
@@ -98,17 +98,17 @@ class Game {
 
         this.ghosts = [];
 
-        for (let i = 0; i < constants.GHOST_COUNT; i++) {
+        for (let i = 0; i < constants.GHOST.COUNT; i++) {
             this.ghosts.push(
                 new Ghost({
                     position: { x, y },
                     velocity: { x: ghostVelocityX, y: ghostVelocityY },
                     width: ghostWidth,
                     height: ghostHeight,
-                    color: constants.GHOST_COLORS[i],
+                    color: constants.GHOST.COLORS[i],
                     promixityRadius: {
-                        x: constants.GHOST_MOVEMENT.PROMIXITY_RADIUS_PERC * this.canvas.width,
-                        y: constants.GHOST_MOVEMENT.PROMIXITY_RADIUS_PERC * this.canvas.height
+                        x: constants.GHOST.MOVEMENT.PROMIXITY_RADIUS_PERC * this.canvas.width,
+                        y: constants.GHOST.MOVEMENT.PROMIXITY_RADIUS_PERC * this.canvas.height
                     }
                 })
             );
@@ -205,7 +205,7 @@ class Game {
         });
         this.ghosts.forEach((ghost) => {
             ghost.draw(ctx, {
-                showProximity: constants.GHOST_MOVEMENT.SHOW_PROXIMITY
+                showProximity: constants.GHOST.MOVEMENT.SHOW_PROXIMITY
             });
         });
         this.player.draw(ctx);

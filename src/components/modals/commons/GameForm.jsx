@@ -43,7 +43,7 @@ function GameForm({ type = "start", expanded = false }) {
               value={playerType}
               onChange={(e) => setPlayerType(e.target.value)}
             >
-              {constants.PLAYER_TYPES.map((type) => (
+              {constants.PLAYER.TYPES.map((type) => (
                 <option value={type} key={type}>
                   {type === "bot" ? "Bot" : "User"}
                 </option>
