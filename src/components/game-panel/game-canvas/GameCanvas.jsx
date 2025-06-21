@@ -13,6 +13,10 @@ function GameCanvas() {
     const aspectRatio = constants.MAP.ASPECT_RATIO;
     gameCanvas.height = constants.MAP.RES_HEIGHT;
     gameCanvas.width = gameCanvas.height * aspectRatio;
+  }, [gameContext.gameCanvasRef]);
+
+  useEffect(() => {
+    const gameCanvas = gameContext.gameCanvasRef.current;
 
     const handleTouchStart = (e) => {
       if (

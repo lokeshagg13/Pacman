@@ -38,6 +38,10 @@
     height: 75vh;
   }
 
+  .max-w-200px {
+    max-width: 200px;
+  }
+
   /* #region -  For General Modal Component */
   .modal-img-fit {
     max-width: 500px;
