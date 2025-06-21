@@ -1,24 +1,20 @@
 import { useContext, useEffect } from "react";
 import { initGame } from "../logic/gameLoop";
 import GameContext from "../store/gameContext";
+import constants from "../store/constants";
 
 function GameCanvas() {
   const gameContext = useContext(GameContext);
 
   useEffect(() => {
     const gameCanvas = gameContext.gameCanvasRef.current;
-    const resizeCanvas = () => {
-      gameCanvas.width = Math.min(window.innerWidth * 0.9, 2160);
-      gameCanvas.height = Math.min(window.innerHeight * 0.6, 1180);
-    };
-    resizeCanvas();
+    const aspectRatio = constants.ASPECT_RATIO;
+    gameCanvas.height = 1180;
+    gameCanvas.width = gameCanvas.height * aspectRatio;
     initGame(gameContext.gameCanvasRef.current, {
       incrementScore: gameContext.incrementScore,
       decrementLives: gameContext.decrementLives,
     });
-    window.addEventListener("resize", () => resizeCanvas());
-    return () =>
-      window.removeEventListener("resize", () => resizeCanvas(false));
     // eslint-disable-next-line
   }, []);
 
