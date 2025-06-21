@@ -3,11 +3,6 @@ import Game from "./game";
 
 let game;
 
-// Handle resizing
-function handleResize() {
-    game.generateAndResizeGameObjects();
-}
-
 // Handle key press
 function handleKeyDown(e) {
     if (game.isOnHold) return;
@@ -52,7 +47,6 @@ export function initGame(gameCanvas, playerType, stateHandlers) {
         game.runJailBarsAnimation();
         animationFrameId = requestAnimationFrame(gameLoop);
 
-        window.addEventListener('resize', handleResize);
         window.addEventListener('keydown', handleKeyDown);
         window.addEventListener('keyup', handleKeyUp);
     }
@@ -69,7 +63,6 @@ export function initGame(gameCanvas, playerType, stateHandlers) {
         if (!isPaused) {
             isPaused = true;
             cancelAnimationFrame(animationFrameId);
-            window.removeEventListener("resize", handleResize);
             window.removeEventListener("keydown", handleKeyDown);
             window.removeEventListener("keyup", handleKeyUp);
         }
@@ -87,7 +80,6 @@ export function initGame(gameCanvas, playerType, stateHandlers) {
     // End Game
     function endGame() {
         cancelAnimationFrame(animationFrameId);
-        window.removeEventListener("resize", handleResize);
         window.removeEventListener("keydown", handleKeyDown);
         window.removeEventListener("keyup", handleKeyUp);
     }

@@ -7,7 +7,7 @@ class Blueprint {
     static movableSymbols = Blueprint.spawnSymbols.concat(['.', '*']);
 
     static fetch() {
-        return blueprints[1].blueprint;
+        return JSON.parse(JSON.stringify(blueprints[1].blueprint));
     }
 
     static findElementInBlueprint(element, blueprint) {

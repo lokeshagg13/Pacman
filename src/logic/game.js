@@ -28,6 +28,7 @@ class Game {
         this.incrementScore = stateHandlers.incrementScore;
 
         // Lives Handling Function
+        this.lives = constants.TOTAL_LIVES; // Local variable
         this.decrementLives = stateHandlers.decrementLives;
     }
 
@@ -155,9 +156,12 @@ class Game {
             if (ghost.isCollidingWithPlayer(this.player)) {
                 this.isOnHold = true;
                 this.player.runDyingAnimation(() => {
+                    this.lives -= 1;
                     this.decrementLives();
-                    this.resetGame();
-                    this.isOnHold = false;
+                    if (this.lives > 0) {
+                        this.resetGame();
+                        this.isOnHold = false;
+                    }
                 });
             }
         });
@@ -167,10 +171,9 @@ class Game {
     runJailBarsAnimation() {
         let toggleCount = 0;
         const interval = setInterval(() => {
-            const show = toggleCount % 2 === 0;
+            const show = toggleCount % 2 !== 0;
             this.map.toggleJailBars(show);
             this.draw();
-
             toggleCount++;
             if (toggleCount === 7) {
                 this.map.toggleJailBars(false);
