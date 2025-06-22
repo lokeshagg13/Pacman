@@ -7,9 +7,12 @@ function GameForm({ type = "start", expanded = false }) {
   const gameContext = useContext(GameContext);
   const [isExpanded, setIsExpanded] = useState(expanded);
   const [playerType, setPlayerType] = useState(gameContext.playerType);
+  const [difficultyLevel, setDifficultyLevel] = useState(
+    gameContext.difficultyLevel
+  );
 
   const handleStart = () => {
-    gameContext.handleStartGame(playerType);
+    gameContext.handleStartGame(playerType, difficultyLevel);
   };
 
   return (
@@ -25,30 +28,53 @@ function GameForm({ type = "start", expanded = false }) {
           </button>
         </div>
         {isExpanded && (
-          <div
-            className={`flex items-center w-full justify-between mt-4 ${
-              isExpanded ? "fade-in w-full" : ""
-            }`}
-          >
-            <label
-              htmlFor="playerType"
-              className="w-full text-md text-left font-bold"
-            >
-              Player
-            </label>
-            <select
-              id="playerType"
-              name="playerType"
-              className="bg-white text-black text-center text-last-center border border-gray-600 rounded px-3 py-1 w-full text-md h-8"
-              value={playerType}
-              onChange={(e) => setPlayerType(e.target.value)}
-            >
-              {constants.PLAYER.TYPES.map((type) => (
-                <option value={type} key={type}>
-                  {type === "bot" ? "Bot" : "User"}
-                </option>
-              ))}
-            </select>
+          <div className={`${isExpanded ? "fade-in w-full" : ""}`}>
+            <div className="flex items-center w-full justify-between mt-4">
+              <label
+                htmlFor="playerType"
+                className="w-full text-md text-left font-bold"
+              >
+                Player
+              </label>
+              <select
+                id="playerType"
+                name="playerType"
+                className="bg-white text-black text-center text-last-center border border-gray-600 rounded px-3 py-1 w-full text-md h-8"
+                value={playerType}
+                onChange={(e) => setPlayerType(e.target.value)}
+              >
+                {constants.PLAYER.TYPES.map((type) => (
+                  <option value={type} key={type}>
+                    {type === "bot" ? "Bot" : "User"}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="flex items-center w-full justify-between mt-2">
+              <label
+                htmlFor="difficultyLevel"
+                className="w-full text-md text-left font-bold"
+              >
+                Difficulty Level
+              </label>
+              <select
+                id="difficultyLevel"
+                name="difficultyLevel"
+                className="bg-white text-black text-center text-last-center border border-gray-600 rounded px-3 py-1 w-full text-md h-8"
+                value={difficultyLevel}
+                onChange={(e) => setDifficultyLevel(e.target.value)}
+              >
+                {constants.GAME.DIFFICULTY_TYPES.map(({ LEVEL }) => (
+                  <option value={LEVEL} key={LEVEL}>
+                    {LEVEL === "easy"
+                      ? "Easy"
+                      : LEVEL === "medium"
+                      ? "Medium"
+                      : "Hard"}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
         )}
       </div>

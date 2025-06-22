@@ -8,10 +8,12 @@ import PlayerController from "./controllers/playerController";
 import GhostController from "./controllers/ghostController";
 
 class Game {
-    constructor(canvas, stateHandlers) {
+    constructor(canvas, playerType, difficultyLevel, stateHandlers) {
         // Basic Game Config
         this.canvas = canvas;
         this.isOnHold = false;
+        this.playerType = playerType;
+        this.difficultyLevel = difficultyLevel;
 
         // Game Objects
         this.blueprint = Blueprint.fetch();
@@ -91,6 +93,7 @@ class Game {
         const ghostHeight = Math.floor(constants.GHOST.HEIGHT_PERC * cellHeight);
         const ghostVelocityX = constants.GHOST.VELOCITY_PERC * this.canvas.width;
         const ghostVelocityY = constants.GHOST.VELOCITY_PERC * this.canvas.height;
+        const proximityRadiusPerc = constants.GAME.DIFFICULTY_TYPES.find((level) => level.LEVEL === this.difficultyLevel).GHOST_PROMIXITY_RADIUS_PERC || 0.2;
         const { row, col } = Blueprint.findElementInBlueprint(
             constants.MAP.SPAWN_SYMBOL.GHOST_ORIGIN,
             this.blueprint
@@ -111,8 +114,8 @@ class Game {
                     height: ghostHeight,
                     color: constants.GHOST.COLORS[i],
                     promixityRadius: {
-                        x: constants.GHOST.MOVEMENT.PROMIXITY_RADIUS_PERC * this.canvas.width,
-                        y: constants.GHOST.MOVEMENT.PROMIXITY_RADIUS_PERC * this.canvas.height
+                        x: proximityRadiusPerc * this.canvas.width,
+                        y: proximityRadiusPerc * this.canvas.height
                     }
                 })
             );
@@ -195,7 +198,7 @@ class Game {
     updateGameObjects() {
         // When player dies, game is on hold until reset for next round
         if (this.isOnHold) return;
-        
+
         this.player.updateMouthAnimation();
         this.playerController.update();
         this.ghostController.update();

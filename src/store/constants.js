@@ -1,6 +1,20 @@
 const constants = {
     GAME: {
         TARGET_FPS: 60,
+        DIFFICULTY_TYPES: [
+            {
+                LEVEL: 'easy',
+                GHOST_PROMIXITY_RADIUS_PERC: 0.2,   // w.r.t CANVAS width and height
+            },
+            {
+                LEVEL: 'medium',
+                GHOST_PROMIXITY_RADIUS_PERC: 0.4,   // w.r.t CANVAS width and height
+            },
+            {
+                LEVEL: 'hard',
+                GHOST_PROMIXITY_RADIUS_PERC: 0.75,   // w.r.t CANVAS width and height
+            }
+        ],
     },
     MAP: {
         RES_HEIGHT: 1180,   // Y axis resolution
@@ -59,7 +73,6 @@ const constants = {
         VELOCITY_PERC: 0.01 / 8,    // w.r.t CANVAS width and height
         MOVEMENT: {
             SHOW_PROXIMITY: false,
-            PROMIXITY_RADIUS_PERC: 0.2,
             RANDOM_STEP_LIMIT: 1000,
             PATH_UPDATE_INTERVAL: 10000 // 10 seconds
         },

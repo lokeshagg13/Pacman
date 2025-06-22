@@ -35,8 +35,8 @@ export function handleSwipeOnCanvas(direction) {
     }
 }
 
-export function initGame(gameCanvas, playerType, stateHandlers) {
-    game = new Game(gameCanvas, stateHandlers);
+export function initGame(gameCanvas, playerType, difficultyLevel, stateHandlers) {
+    game = new Game(gameCanvas, playerType, difficultyLevel, stateHandlers);
 
     const frameDuration = 1000 / constants.GAME.TARGET_FPS;
     let lastTime = performance.now();
