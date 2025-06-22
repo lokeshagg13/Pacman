@@ -37,7 +37,9 @@ function GameControls() {
         onClick={
           gameContext.gameStatus === "running"
             ? () => gameContext.handlePauseGame()
-            : () => gameContext.handleResumeGame()
+            : gameContext.gameStatus === "paused"
+            ? () => gameContext.handleResumeGame()
+            : () => {}
         }
         // disabled={gameContext.countdownRunning}
       >
@@ -47,7 +49,12 @@ function GameControls() {
         className={`quit-btn ${
           gameContext.gameStatus === "paused" ? "z-100" : "z-0"
         } ${gameContext.countdownRunning ? "disabled-btn" : ""}`}
-        onClick={() => gameContext.handleInterruptGame()}
+        onClick={
+          gameContext.gameStatus === "paused" ||
+          gameContext.gameStatus === "running"
+            ? () => gameContext.handleInterruptGame()
+            : () => {}
+        }
         // disabled={gameContext.countdownRunning}
       >
         Quit
