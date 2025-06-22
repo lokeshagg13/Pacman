@@ -156,8 +156,11 @@ class Game {
 
     // Checks for ghost colliding with the player
     checkGhostsCollision() {
+        let collisionDetected = false;
+
         this.ghosts.forEach(ghost => {
-            if (ghost.isCollidingWithPlayer(this.player)) {
+            if (!collisionDetected && ghost.isCollidingWithPlayer(this.player)) {
+                collisionDetected = true;
                 this.isOnHold = true;
                 this.dyingAudio.play();
                 this.player.runDyingAnimation(() => {
@@ -192,7 +195,7 @@ class Game {
     updateGameObjects() {
         // When player dies, game is on hold until reset for next round
         if (this.isOnHold) return;
-
+        
         this.player.updateMouthAnimation();
         this.playerController.update();
         this.ghostController.update();
