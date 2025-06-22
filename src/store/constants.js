@@ -25,7 +25,8 @@ const constants = {
         },
         EMPTY_SPACE_SYMBOL: '*',
         PELLET_SYMBOL: '.',
-        JAIL_SYMBOL: 'J',
+        JAIL_BLOCK_SYMBOL: 'J',
+        JAIL_BREAK_SYMBOL: 'I',
         DIRECTIONS: ["up", "down", "left", "right"],
         ROW_OFFSET: { up: -1, down: 1, left: 0, right: 0 },
         COL_OFFSET: { up: 0, down: 0, left: -1, right: 1 }

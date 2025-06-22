@@ -2,7 +2,6 @@ import constants from "../../store/constants";
 import blueprints from "./data/blueprints.json";
 
 class Blueprint {
-    static jailSymbol = constants.MAP.JAIL_SYMBOL;
     static spawnSymbols = Object.values(constants.MAP.SPAWN_SYMBOL);
     static movableSymbols = Blueprint.spawnSymbols.concat([
         constants.MAP.PELLET_SYMBOL, 

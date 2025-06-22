@@ -18,7 +18,7 @@ class Map {
     #generateMap() {
         this.blueprint.forEach((row, i) => {
             row.forEach((symbol, j) => {
-                if (symbol === Blueprint.jailSymbol) {
+                if (symbol === constants.MAP.JAIL_BLOCK_SYMBOL) {
                     this.jailCells.push({ row: i, col: j });
                 }
                 if (Blueprint.movableSymbols.includes(symbol)) {
@@ -39,7 +39,7 @@ class Map {
     }
 
     // Toggle Jail Bar Visibility
-    toggleJailBars(show) {
+    toggleJailBars(show, permanent = false) {
         this.jailCells.forEach(({ row, col }) => {
             const { x, y } = this.getCanvasPositionForArrayIndices({
                 position: { row, col },
@@ -47,10 +47,10 @@ class Map {
             });
             if (show) {
                 // Reappear jail bars
-                this.blueprint[row][col] = constants.MAP.JAIL_SYMBOL;
+                this.blueprint[row][col] = constants.MAP.JAIL_BLOCK_SYMBOL;
                 this.boundaries.push(
                     new Boundary({
-                        symbol: constants.MAP.JAIL_SYMBOL,
+                        symbol: constants.MAP.JAIL_BLOCK_SYMBOL,
                         position: { x, y },
                         width: this.cellWidth,
                         height: this.cellHeight
@@ -58,10 +58,24 @@ class Map {
                 );
             } else {
                 // Disappear jail bars
-                this.blueprint[row][col] = constants.MAP.EMPTY_SPACE_SYMBOL;
+                this.blueprint[row][col] =
+                    permanent ?
+                        constants.MAP.EMPTY_SPACE_SYMBOL :
+                        constants.MAP.JAIL_BREAK_SYMBOL;
+
                 this.boundaries = this.boundaries.filter((boundary) => {
                     return !(boundary.position.x === x && boundary.position.y === y);
                 });
+                if (!permanent) {
+                    this.boundaries.push(
+                        new Boundary({
+                            symbol: constants.MAP.JAIL_BREAK_SYMBOL,
+                            position: { x, y },
+                            width: this.cellWidth,
+                            height: this.cellHeight
+                        })
+                    );
+                }
             }
         });
     }

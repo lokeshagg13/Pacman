@@ -15,6 +15,7 @@ import CapTopImage from "../../images/assets/capTop.svg";
 import CapBottomImage from "../../images/assets/capBottom.svg";
 import BlockImage from "../../images/assets/block.svg";
 import JailBarsImage from "../../images/assets/jailBars.svg";
+import JailBreakImage from "../../images/assets/jailBreak.svg";
 import constants from "../../store/constants";
 
 class Boundary {
@@ -61,7 +62,8 @@ class Boundary {
             case '6': return createImage(PipeConnectorRightImage);
             case '7': return createImage(PipeConnectorBottomImage);
             case '8': return createImage(PipeConnectorLeftImage);
-            case constants.MAP.JAIL_SYMBOL: return createImage(JailBarsImage);
+            case constants.MAP.JAIL_BLOCK_SYMBOL: return createImage(JailBarsImage);
+            case constants.MAP.JAIL_BREAK_SYMBOL: return createImage(JailBreakImage);
             default: return createImage(PipeHorizontalImage);
         }
     }

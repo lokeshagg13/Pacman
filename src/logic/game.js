@@ -188,7 +188,7 @@ class Game {
             toggleCount++;
             const maxCheck = 2 * constants.ANIMATIONS.JAIL_BARS_DISAPPEARENCE_COUNT + 1;
             if (toggleCount === maxCheck) {
-                this.map.toggleJailBars(false);
+                this.map.toggleJailBars(false, true);
                 clearInterval(interval);
             }
         }, constants.ANIMATIONS.JAIL_BARS_ANIMATION_RATE);
