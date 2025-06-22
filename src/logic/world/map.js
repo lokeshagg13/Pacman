@@ -14,6 +14,25 @@ class Map {
         this.#generateMap();
     }
 
+    // Add a boundary to the map
+    #addBoundary(symbol, { x, y }) {
+        this.boundaries.push(
+            new Boundary({
+                symbol: symbol,
+                position: { x, y },
+                width: this.cellWidth,
+                height: this.cellHeight
+            })
+        );
+    }
+
+    // Remove all cells from map that has a specific canvas position
+    #removeBoundariesWithCanvasPosition({x, y}) {
+        this.boundaries = this.boundaries.filter((boundary) => {
+            return !(boundary.position.x === x && boundary.position.y === y);
+        });
+    }
+
     // Generate the map based on the blueprint
     #generateMap() {
         this.blueprint.forEach((row, i) => {
@@ -26,14 +45,7 @@ class Map {
                 }
                 const x = this.cellWidth * j;
                 const y = this.cellHeight * i;
-                this.boundaries.push(
-                    new Boundary({
-                        symbol: symbol,
-                        position: { x, y },
-                        width: this.cellWidth,
-                        height: this.cellHeight
-                    })
-                );
+                this.#addBoundary(symbol, { x, y });
             });
         });
     }
@@ -48,33 +60,17 @@ class Map {
             if (show) {
                 // Reappear jail bars
                 this.blueprint[row][col] = constants.MAP.JAIL_BLOCK_SYMBOL;
-                this.boundaries.push(
-                    new Boundary({
-                        symbol: constants.MAP.JAIL_BLOCK_SYMBOL,
-                        position: { x, y },
-                        width: this.cellWidth,
-                        height: this.cellHeight
-                    })
-                );
+                this.#removeBoundariesWithCanvasPosition({x, y});
+                this.#addBoundary(constants.MAP.JAIL_BLOCK_SYMBOL, { x, y });
             } else {
                 // Disappear jail bars
+                this.#removeBoundariesWithCanvasPosition({x, y});
                 this.blueprint[row][col] =
                     permanent ?
                         constants.MAP.EMPTY_SPACE_SYMBOL :
                         constants.MAP.JAIL_BREAK_SYMBOL;
-
-                this.boundaries = this.boundaries.filter((boundary) => {
-                    return !(boundary.position.x === x && boundary.position.y === y);
-                });
                 if (!permanent) {
-                    this.boundaries.push(
-                        new Boundary({
-                            symbol: constants.MAP.JAIL_BREAK_SYMBOL,
-                            position: { x, y },
-                            width: this.cellWidth,
-                            height: this.cellHeight
-                        })
-                    );
+                    this.#addBoundary(constants.MAP.JAIL_BREAK_SYMBOL, { x, y });
                 }
             }
         });
