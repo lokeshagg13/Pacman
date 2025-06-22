@@ -44,6 +44,8 @@ export function initGame(gameCanvas, playerType, stateHandlers) {
     let isPaused = false;
 
     function startGameLoop(resumed = false) {
+        if (isPaused) return;
+
         function gameLoop(currentTime) {
             if (!isPaused) {
                 const deltaTime = currentTime - lastTime;
@@ -57,6 +59,7 @@ export function initGame(gameCanvas, playerType, stateHandlers) {
         }
 
         if (!resumed) {
+            game.beginAudio.play();
             game.generateAndResizeGameObjects();
             game.runJailBarsAnimation();
         }
@@ -94,6 +97,9 @@ export function initGame(gameCanvas, playerType, stateHandlers) {
 
     // End Game
     function endGame() {
+        isPaused = false;
+        game.clear();
+        game = null;
         cancelAnimationFrame(animationFrameId);
         window.removeEventListener("keydown", handleKeyDown);
         window.removeEventListener("keyup", handleKeyUp);

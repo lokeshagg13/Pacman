@@ -30,6 +30,10 @@ class Game {
         // Lives Handling Function
         this.lives = constants.PLAYER.TOTAL_LIVES; // Local variable
         this.decrementLives = stateHandlers.decrementLives;
+
+        // Audio effects
+        this.beginAudio = new Audio(`${process.env.PUBLIC_URL}/audios/begin.mp3`);
+        this.dyingAudio = new Audio(`${process.env.PUBLIC_URL}/audios/dying.mp3`);
     }
 
     // Create and Resize pellets based on map's cell dimensions
@@ -155,6 +159,7 @@ class Game {
         this.ghosts.forEach(ghost => {
             if (ghost.isCollidingWithPlayer(this.player)) {
                 this.isOnHold = true;
+                this.dyingAudio.play();
                 this.player.runDyingAnimation(() => {
                     this.lives -= 1;
                     this.decrementLives();
@@ -210,6 +215,12 @@ class Game {
             });
         });
         this.player.draw(ctx);
+    }
+
+    // Clear game
+    clear() {
+        const ctx = this.canvas.getContext("2d");
+        ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 }
 
