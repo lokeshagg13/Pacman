@@ -11,9 +11,10 @@ class Game {
     constructor(canvas, playerType, difficultyLevel, stateHandlers) {
         // Basic Game Config
         this.canvas = canvas;
-        this.isOnHold = false;
         this.playerType = playerType;
         this.difficultyLevel = difficultyLevel;
+        this.isOnHold = false;
+        this.isPlayerFreezed = false;
 
         // Game Objects
         this.blueprint = Blueprint.fetch();
@@ -35,6 +36,7 @@ class Game {
 
         // Audio effects
         this.beginAudio = new Audio(`${process.env.PUBLIC_URL}/audios/begin.mp3`);
+        this.jailBreakAudio = new Audio(`${process.env.PUBLIC_URL}/audios/jail-break.mp3`);
         this.dyingAudio = new Audio(`${process.env.PUBLIC_URL}/audios/dying.mp3`);
     }
 
@@ -143,7 +145,7 @@ class Game {
         this.spawnAndResizeGhosts(this.map.cellWidth, this.map.cellHeight);
         this.playerController = new PlayerController(this);
         this.ghostController = new GhostController(this);
-        this.runJailBarsAnimation();
+        this.runJailBarsAnimation(true);
     }
 
     // Checks and removes any pellets that collide with the player
@@ -179,8 +181,9 @@ class Game {
     }
 
     // Animate Jail Bars
-    runJailBarsAnimation() {
+    runJailBarsAnimation(reset = false) {
         let toggleCount = 0;
+        this.isPlayerFreezed = true;
         const interval = setInterval(() => {
             const show = toggleCount % 2 !== 0;
             this.map.toggleJailBars(show);
@@ -189,7 +192,10 @@ class Game {
             const maxCheck = 2 * constants.ANIMATIONS.JAIL_BARS_DISAPPEARENCE_COUNT + 1;
             if (toggleCount === maxCheck) {
                 this.map.toggleJailBars(false, true);
+                this.isPlayerFreezed = false;
                 clearInterval(interval);
+            } else {
+                if (reset && !show) this.jailBreakAudio.play();
             }
         }, constants.ANIMATIONS.JAIL_BARS_ANIMATION_RATE);
     }
@@ -199,8 +205,10 @@ class Game {
         // When player dies, game is on hold until reset for next round
         if (this.isOnHold) return;
 
-        this.player.updateMouthAnimation();
-        this.playerController.update();
+        if (!this.isPlayerFreezed) {
+            this.player.updateMouthAnimation();
+            this.playerController.update();
+        }
         this.ghostController.update();
         this.checkPelletsCollision();
         this.checkGhostsCollision();
