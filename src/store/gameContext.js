@@ -38,6 +38,7 @@ export function GameContextProvider(props) {
         setGameStatus("running");
         setScore(0);
         setLives(constants.PLAYER.TOTAL_LIVES);
+        setIsWinner(false);
         if (playerType && constants.PLAYER.TYPES.includes(playerType)) setPlayerType(playerType);
 
         const levels = constants.GAME.DIFFICULTY_TYPES.map(level => level.LEVEL);
@@ -46,6 +47,7 @@ export function GameContextProvider(props) {
         const { startGame, pauseGame, resumeGame, endGame } = initGame(gameCanvasRef.current, playerType, difficultyLevel, {
             incrementScore,
             decrementLives,
+            declareWinner
         });
         pauseGameFuncRef.current = pauseGame;
         resumeGameFuncRef.current = resumeGame;
@@ -90,6 +92,10 @@ export function GameContextProvider(props) {
 
     function decrementLives() {
         setLives((prevLives) => prevLives - 1);
+    }
+
+    function declareWinner() {
+        setIsWinner(true);
     }
 
     const currentGameContext = {

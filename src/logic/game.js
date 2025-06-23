@@ -34,6 +34,9 @@ class Game {
         this.lives = constants.PLAYER.TOTAL_LIVES; // Local variable
         this.decrementLives = stateHandlers.decrementLives;
 
+        // Winner Handling Function
+        this.declareWinner = stateHandlers.declareWinner;
+
         // Audio effects
         this.beginAudio = new Audio(`${process.env.PUBLIC_URL}/audios/begin.mp3`);
         this.jailBreakAudio = new Audio(`${process.env.PUBLIC_URL}/audios/jail-break.mp3`);
@@ -150,6 +153,10 @@ class Game {
 
     // Checks and removes any pellets that collide with the player
     checkPelletsCollision() {
+        if (this.pellets.length === 0) {
+            this.declareWinner(true);
+            return;
+        }
         this.pellets = this.pellets.filter(pellet => {
             if (pellet.isCollidingWithPlayer(this.player)) {
                 this.incrementScore();

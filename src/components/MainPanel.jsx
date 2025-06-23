@@ -11,6 +11,22 @@ function MainPanel() {
   const gameContext = useContext(GameContext);
   const [isTouchDevice, setIsTouchDevice] = useState(false);
   const [showHint, setShowHint] = useState(false);
+  
+  useEffect(() => {
+    if (gameContext.isWinner) {
+      gameContext.handleEndGame(true);
+    }
+    // eslint-disable-next-line
+  }, [gameContext.isWinner]);
+
+  useEffect(() => {
+    if (gameContext.gameStatus === "running") {
+      window.scrollTo({
+        top: document.body.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  }, [gameContext.gameStatus]);
 
   useEffect(() => {
     if (
@@ -41,15 +57,6 @@ function MainPanel() {
       window.removeEventListener("touchstart", handleFirstTouch);
     };
   }, [isTouchDevice, gameContext.gameStatus, gameContext.playerType]);
-
-  useEffect(() => {
-    if (gameContext.gameStatus === "running") {
-      window.scrollTo({
-        top: document.body.scrollHeight,
-        behavior: "smooth",
-      });
-    }
-  }, [gameContext.gameStatus]);
 
   return (
     <div>
