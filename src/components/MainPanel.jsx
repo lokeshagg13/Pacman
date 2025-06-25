@@ -11,9 +11,9 @@ function MainPanel() {
   const gameContext = useContext(GameContext);
   const [isTouchDevice, setIsTouchDevice] = useState(false);
   const [showHint, setShowHint] = useState(false);
-  
+
   useEffect(() => {
-    if (gameContext.isWinner) {
+    if (gameContext.gameStatus === "running" && gameContext.isWinner) {
       gameContext.handleEndGame(true);
     }
     // eslint-disable-next-line

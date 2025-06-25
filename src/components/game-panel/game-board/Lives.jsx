@@ -6,7 +6,7 @@ function Lives() {
   const gameContext = useContext(GameContext);
 
   useEffect(() => {
-    if (gameContext.lives <= 0) {
+    if (gameContext.gameStatus === "running" && gameContext.lives <= 0) {
       gameContext.handleEndGame(false);
     }
     // eslint-disable-next-line
