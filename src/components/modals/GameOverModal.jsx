@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 
 import StrongPacmanImage from "../../images/pacman/strong-pacman.png";
 import CompletionModal from "./commons/CompletionModal";
@@ -7,12 +7,18 @@ import GameContext from "../../store/gameContext";
 function GameOverModal() {
   const gameContext = useContext(GameContext);
   const [highScore, setHighScore] = useState(0);
+  const gameOverAudioRef = useRef(null);
+  gameOverAudioRef.current = new Audio(`${process.env.PUBLIC_URL}/audios/game-over.mp3`);
+
+  useEffect(() => {
+    gameOverAudioRef.current.play();
+  }, []);
 
   useEffect(() => {
     if (gameContext.gameStatus === "completed") {
       const currentScore = gameContext.score;
       const storedHighScore = localStorage.getItem("pacmanHighScore");
-      if (!storedHighScore || (currentScore > storedHighScore)) {
+      if (!storedHighScore || currentScore > storedHighScore) {
         localStorage.setItem("pacmanHighScore", currentScore);
         setHighScore(currentScore);
         return;
