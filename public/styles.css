@@ -14,6 +14,14 @@
     background: rgba(0, 0, 0, 0.5);
   }
 
+  .app-grid {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+  }
+
   .img-fit {
     max-width: 90%;
     object-fit: contain;
@@ -40,6 +48,31 @@
 
   .max-w-200px {
     max-width: 200px;
+  }
+
+  .rotate-0 {
+    transform: rotate(0deg);
+    transition: transform 0.5s ease;
+  }
+
+  .rotate-180 {
+    transform: rotate(180deg);
+    transition: transform 0.5s ease;
+  }
+
+  .fade-in {
+    animation: fadeInTop 0.5s ease forwards;
+  }
+
+  @keyframes fadeInTop {
+    from {
+      opacity: 0;
+      transform: translateY(-50px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   /* #region -  For General Modal Component */
@@ -328,28 +361,279 @@
   }
   /* #endregion */
 
-  .rotate-0 {
-    transform: rotate(0deg);
-    transition: transform 0.5s ease;
+  /* #region - For Simulator Log Component */
+  .simulator-log-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box;
   }
 
-  .rotate-180 {
-    transform: rotate(180deg);
-    transition: transform 0.5s ease;
+  .simulator-log-container .simulator-log-card {
+    width: 100%;
+    max-width: 600px;
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    text-align: left;
+    transition: transform 0.2s, box-shadow 0.2s;
   }
 
-  .fade-in {
-    animation: fadeInTop 0.5s ease forwards;
+  .simulator-log-container .simulator-log-card:hover {
+    transform: translateY(-5px);
   }
 
-  @keyframes fadeInTop {
-    from {
-      opacity: 0;
-      transform: translateY(-50px);
+  .simulator-log-container .simulator-log-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .simulator-log-container .simulator-log-header h2 {
+    font-size: 1.4rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-align: center;
+  }
+
+  .simulator-log-container .simulator-log-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .simulator-log-container .simulator-log-section {
+    flex: 1;
+    text-align: center;
+    margin: 0 0.5rem;
+    background: wheat;
+    border-radius: 1rem;
+    padding-top: 2px;
+  }
+
+  .simulator-log-container .simulator-log-section h3 {
+    margin-bottom: 0.5rem;
+    color: #333;
+    font-weight: bold;
+    font-size: 1.3rem;
+  }
+
+  .simulator-log-container .simulator-log-section p {
+    font-size: 1.2rem;
+    color: #555;
+    margin: 0;
+  }
+
+  .simulator-log-container .simulator-log-row:not(:first-child) {
+    margin-top: 1rem;
+    border-top: 1px solid #e0e0e0;
+    padding-top: 1rem;
+  }
+
+  @media (max-width: 574px) {
+    .simulator-log-container .simulator-log-row {
+      flex-direction: column;
     }
-    to {
-      opacity: 1;
-      transform: translateY(0);
+
+    .simulator-log-container .simulator-log-section {
+      margin-bottom: 1rem;
+      margin: 0;
+      width: 100%;
     }
   }
+  /* #endregion */
+
+  /* #region - For Simulator Control Component */
+  .simulator-control {
+    max-width: 1000px;
+  }
+
+  .simulator-control .simulator-btn {
+    width: 200px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-size: 1.2rem;
+    font-weight: 400;
+    border-radius: 8px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+    transition: background 0.3s ease;
+  }
+
+  .simulator-control .begin-simulator-btn {
+    background: linear-gradient(145deg, #004aad, #007bff);
+    color: white;
+    border: 2px solid #004aad;
+  }
+
+  .simulator-control .begin-simulator-btn:not(:disabled):hover {
+    background: linear-gradient(145deg, #003d7a, #005bb5);
+  }
+
+  .simulator-control .reset-simulator-btn {
+    background: #ffc107;
+    color: black;
+    border: 1px solid #e0a800;
+  }
+
+  .simulator-control .reset-simulator-btn:hover {
+    background-color: #e0a800;
+    color: white;
+  }
+
+  .simulator-control .exit-simulator-btn {
+    background-color: #f44336;
+    color: white;
+    border: none;
+  }
+
+  .simulator-control .exit-simulator-btn:hover {
+    background-color: #d32f2f;
+  }
+
+  @media (max-width: 670px) {
+    .simulator-control .sm\:px-2 {
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
+    }
+  }
+
+  @media (max-width: 374px) {
+    .simulator-control .xs\:flex-wrap {
+      flex-wrap: wrap;
+    }
+
+    .xs\:justify-center {
+      justify-content: center;
+    }
+  }
+  /* #endregion */
+
+  /* #region - For Continue Simulation Component */
+  .continue-simulation-text {
+    display: flex;
+    color: white;
+    margin-top: 1rem;
+    font-size: 1.2rem;
+    flex-direction: row;
+    flex-wrap: wrap;
+    border: 1px solid;
+    padding: 1rem;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .continue-simulation-text span {
+    margin-inline: 1rem;
+    font-weight: 600;
+    color: wheat;
+  }
+
+  .continue-simulation {
+    margin-top: 1rem;
+    padding: 1.5rem;
+    border: 1px solid #ddd;
+    border-radius: 0.5rem;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .continue-simulation .header h3 {
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #333;
+  }
+
+  .continue-simulation .input-section {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .continue-simulation .input-section .gen-input-section,
+  .continue-simulation .input-section .file-input-section {
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .continue-simulation .input-field,
+  .continue-simulation .input-file {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 0.25rem;
+    font-size: 1rem;
+  }
+
+  .continue-simulation .input-file {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .continue-simulation .input-field:focus,
+  .continue-simulation .input-file:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
+  }
+
+  .continue-simulation .input-file > p {
+    font-weight: 400;
+    flex: 1;
+  }
+
+  .continue-simulation .input-file-controls {
+    display: flex;
+    gap: 10px;
+  }
+
+  .continue-simulation .input-file-controls button {
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+
+  .continue-simulation .input-file-controls button:hover {
+    transform: scale(1.2);
+  }
+
+  .continue-simulation .simulator-btn.continue-simulator-btn {
+    margin-top: 1rem;
+    align-self: flex-start;
+  }
+
+  .continue-simulator-btn {
+    background: linear-gradient(145deg, #004aad, #007bff);
+    color: white;
+    border: 2px solid #004aad;
+  }
+
+  .continue-simulator-btn:not(:disabled):hover {
+    background: linear-gradient(145deg, #003d7a, #005bb5);
+  }
+
+  @media (max-width: 768px) {
+    .input-section {
+      flex-direction: column;
+    }
+
+    .input-section .gen-input-section,
+    .input-section .file-input-section {
+      width: 100%;
+    }
+
+    .simulator-btn.continue-simulator-btn {
+      width: 100%;
+    }
+  }
+  /* #endregion */
 }

@@ -2,9 +2,11 @@ import { useContext, useState } from "react";
 import GameContext from "../../../store/gameContext";
 import constants from "../../../store/constants";
 import DropdownIcon from "../../ui/DropdownIcon";
+import SimulatorContext from "../../../store/simulatorContext";
 
 function GameForm({ type = "start", expanded = false }) {
   const gameContext = useContext(GameContext);
+  const simulatorContext = useContext(SimulatorContext);
   const [isExpanded, setIsExpanded] = useState(expanded);
   const [playerType, setPlayerType] = useState(gameContext.playerType);
   const [difficultyLevel, setDifficultyLevel] = useState(
@@ -82,7 +84,10 @@ function GameForm({ type = "start", expanded = false }) {
       {/* Game Controls */}
       <div className="game-form flex justify-between items-center w-full mt-8 gap-8">
         {type === "start" && (
-          <button className="control-btn enter-simulator-btn">
+          <button
+            className="control-btn enter-simulator-btn"
+            onClick={() => simulatorContext.openSimulator()}
+          >
             Enter Simulator
           </button>
         )}
