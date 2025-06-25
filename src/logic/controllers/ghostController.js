@@ -57,16 +57,16 @@ class GhostController {
     isCellMovementValid(ghost, direction) {
         const map = this.game.map;
 
-        const { row: ghostRow, col: ghostCol } = this.game.map.getArrayIndicesForCanvasPosition(ghost.position);
+        const { row: ghostRow, col: ghostCol } = ghost.indices;
 
         const newRow = ghostRow + (GhostController.rowOffset[direction] || 0);
         const newCol = ghostCol + (GhostController.colOffset[direction] || 0);
 
         return (
             newRow >= 0 &&
-            newRow < map.blueprint.length &&
+            newRow < map.numRows &&
             newCol >= 0 &&
-            newCol < map.blueprint[0].length &&
+            newCol < map.numCols &&
             Blueprint.movableSymbols.includes(map.blueprint[newRow][newCol])
         );
     }
@@ -133,7 +133,7 @@ class GhostController {
 
         // Update the pathIndex if current move is completed
         if (ghost.pathIndex >= 0 && ghost.pathIndex < ghost.pathToPlayer.length) {
-            const currentCell = this.game.map.getArrayIndicesForCanvasPosition(ghost.position);
+            const currentCell = ghost.indices;
 
             if (!ghost.targetCell && !ghost.targetPosition) {
                 const currentDirection = ghost.pathToPlayer[ghost.pathIndex];
@@ -171,6 +171,8 @@ class GhostController {
                     });
                     ghost.changeState(nextDirection);
                 }
+            } else {
+                ghost.changeState(ghost.pathToPlayer[ghost.pathIndex]);
             }
         } else {
             this.recalculatePathToPlayer(ghost);
@@ -180,6 +182,7 @@ class GhostController {
 
     // Update ghost-related actions
     update() {
+        const map = this.game.map;
         this.game.ghosts.forEach((ghost) => {
             // Update movements
             if (this.isPlayerWithinGhostProximity(ghost)) {
@@ -190,8 +193,7 @@ class GhostController {
 
             // Move the ghost in the current state if the move is valid
             if (this.isPositionalMovementValid(ghost, ghost.state)) {
-                ghost.move();
-                ghost.snapToGrid(this.game.map.cellWidth, this.game.map.cellHeight);
+                ghost.move(map.cellWidth, map.cellHeight);
             } else {
                 if (this.isPlayerWithinGhostProximity(ghost)) {
                     this.updateGhostMovementAlongPath(ghost);

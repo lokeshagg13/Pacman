@@ -41,6 +41,7 @@ const constants = {
         RADIUS_PERC: 0.4,   // w.r.t CELL width and height
         VISUAL_RADIUS_PERC: 0.8,    // w.r.t PLAYER RADIUS
         VELOCITY_PERC: 0.02 / 8,    // w.r.t CANVAS width and height
+        SIMULATOR_VELOCITY_PERC: 0.04 / 8,    // w.r.t CANVAS width and height
         MAX_MOUTH_OPENING: 50 * Math.PI / 180,
         MOUTH_ANIMATION_SPEED: 0.1,    // Rate between 0 and 1
         TOTAL_LIVES: 3,
@@ -72,10 +73,11 @@ const constants = {
             RADIUS_PERC: 1 / 6,  // w.r.t GHOST width and height
         },
         VELOCITY_PERC: 0.01 / 8,    // w.r.t CANVAS width and height
+        SIMULATOR_VELOCITY_PERC: 0.04 / 8,    // w.r.t CANVAS width and height
         MOVEMENT: {
             SHOW_PROXIMITY: false,
             RANDOM_STEP_LIMIT: 1000,
-            PATH_UPDATE_INTERVAL: 10000 // 10 seconds
+            PATH_UPDATE_INTERVAL: 1000 // 10 seconds
         },
     },
     ANIMATIONS: {

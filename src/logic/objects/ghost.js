@@ -1,8 +1,9 @@
 import constants from "../../store/constants";
 
 class Ghost {
-    constructor({ position, velocity, width, height, color = "red", promixityRadius = null }) {
+    constructor({ position, indices, velocity, width, height, color = "red", promixityRadius = null }) {
         this.position = position; // center position
+        this.indices = indices;
         this.velocity = velocity;
         this.width = width;
         this.height = height;
@@ -65,11 +66,16 @@ class Ghost {
     }
 
     // Move the ghost based on its current state
-    move() {
+    move(cellWidth, cellHeight) {
         if (this.state === "up") this.position.y -= this.velocity.y;
         if (this.state === "down") this.position.y += this.velocity.y;
         if (this.state === "left") this.position.x -= this.velocity.x;
         if (this.state === "right") this.position.x += this.velocity.x;
+        this.indices = {
+            row: Math.floor(this.position.y / cellHeight),
+            col: Math.floor(this.position.x / cellWidth)
+        };
+        this.snapToGrid(cellWidth, cellHeight);
     }
 
     isCollidingWithPlayer(player) {

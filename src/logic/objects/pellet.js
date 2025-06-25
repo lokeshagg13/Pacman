@@ -1,8 +1,9 @@
 import constants from "../../store/constants";
 
 class Pellet {
-    constructor({ position, radius }) {
+    constructor({ position, indices, radius }) {
         this.position = position;
+        this.indices = indices;
         this.radius = radius;
     }
 

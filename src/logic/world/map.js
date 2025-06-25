@@ -27,7 +27,7 @@ class Map {
     }
 
     // Remove all cells from map that has a specific canvas position
-    #removeBoundariesWithCanvasPosition({x, y}) {
+    #removeBoundariesWithCanvasPosition({ x, y }) {
         this.boundaries = this.boundaries.filter((boundary) => {
             return !(boundary.position.x === x && boundary.position.y === y);
         });
@@ -60,11 +60,11 @@ class Map {
             if (show) {
                 // Reappear jail bars
                 this.blueprint[row][col] = constants.MAP.JAIL_BLOCK_SYMBOL;
-                this.#removeBoundariesWithCanvasPosition({x, y});
+                this.#removeBoundariesWithCanvasPosition({ x, y });
                 this.#addBoundary(constants.MAP.JAIL_BLOCK_SYMBOL, { x, y });
             } else {
                 // Disappear jail bars
-                this.#removeBoundariesWithCanvasPosition({x, y});
+                this.#removeBoundariesWithCanvasPosition({ x, y });
                 this.blueprint[row][col] =
                     permanent ?
                         constants.MAP.EMPTY_SPACE_SYMBOL :
@@ -73,6 +73,18 @@ class Map {
                     this.#addBoundary(constants.MAP.JAIL_BREAK_SYMBOL, { x, y });
                 }
             }
+        });
+    }
+
+    removeJailBars() {
+        this.jailCells.forEach(({ row, col }) => {
+            const { x, y } = this.getCanvasPositionForArrayIndices({
+                position: { row, col },
+                offset: { x: 0, y: 0 }
+            });
+            this.#removeBoundariesWithCanvasPosition({ x, y });
+            this.blueprint[row][col] =
+                constants.MAP.EMPTY_SPACE_SYMBOL;
         });
     }
 

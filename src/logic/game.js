@@ -3,9 +3,11 @@ import Blueprint from "./world/blueprint";
 import Map from "./world/map";
 import Pellet from "./objects/pellet";
 import Ghost from "./objects/ghost";
-import Player from "./objects/player";
-import PlayerController from "./controllers/playerController";
 import GhostController from "./controllers/ghostController";
+import HumanPlayer from "./objects/players/humanPlayer";
+import HumanPlayerController from "./controllers/playerControllers/humanPlayerController";
+import BotPlayer from "./objects/players/botPlayer";
+import BotPlayerController from "./controllers/playerControllers/botPlayerController";
 
 class Game {
     constructor(canvas, playerType, difficultyLevel, stateHandlers) {
@@ -24,7 +26,11 @@ class Game {
         this.pellets = [];
 
         // Game Object Controllers
-        this.playerController = new PlayerController(this);
+        if (playerType === 'user') {
+            this.playerController = new HumanPlayerController(this);
+        } else {
+            this.playerController = new BotPlayerController(this);
+        }
         this.ghostController = new GhostController(this);
 
         // Score Handling Function
@@ -60,6 +66,7 @@ class Game {
                     this.pellets.push(
                         new Pellet({
                             position: { x, y },
+                            indices: { row: i, col: j },
                             radius: {
                                 x: pelletRadiusX, y: pelletRadiusY
                             }
@@ -85,11 +92,21 @@ class Game {
             offset: { x: 0.5, y: 0.5 }
         });
 
-        this.player = new Player({
-            position: { x, y },
-            velocity: { x: playerVelocityX, y: playerVelocityY },
-            radius: { x: playerRadiusX, y: playerRadiusY }
-        });
+        if (this.playerType === "user") {
+            this.player = new HumanPlayer({
+                position: { x, y },
+                indices: { row, col },
+                velocity: { x: playerVelocityX, y: playerVelocityY },
+                radius: { x: playerRadiusX, y: playerRadiusY }
+            });
+        } else {
+            this.player = new BotPlayer({
+                position: { x, y },
+                indices: { row, col },
+                velocity: { x: playerVelocityX, y: playerVelocityY },
+                radius: { x: playerRadiusX, y: playerRadiusY }
+            });
+        }
     }
 
     // Spawn and Resize the ghosts based on map's cell dimensions and canvas dimensions
@@ -114,6 +131,7 @@ class Game {
             this.ghosts.push(
                 new Ghost({
                     position: { x, y },
+                    indices: { row, col },
                     velocity: { x: ghostVelocityX, y: ghostVelocityY },
                     width: ghostWidth,
                     height: ghostHeight,
@@ -146,7 +164,11 @@ class Game {
     resetGame() {
         this.spawnAndResizePlayer(this.map.cellWidth, this.map.cellHeight);
         this.spawnAndResizeGhosts(this.map.cellWidth, this.map.cellHeight);
-        this.playerController = new PlayerController(this);
+        if (this.playerType === "user") {
+            this.playerController = new HumanPlayerController(this);
+        } else {
+            this.playerController = new BotPlayerController(this);
+        }
         this.ghostController = new GhostController(this);
         this.runJailBarsAnimation(true);
     }

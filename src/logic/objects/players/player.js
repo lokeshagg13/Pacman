@@ -1,8 +1,9 @@
-import constants from "../../store/constants";
+import constants from "../../../store/constants";
 
 class Player {
-    constructor({ position, velocity, radius }) {
+    constructor({ position, indices, velocity, radius }) {
         this.position = position;
+        this.indices = indices;
         this.velocity = velocity;
         this.radius = radius;
         this.visualRadius = {
@@ -64,11 +65,16 @@ class Player {
     }
 
     // Move the player based on its current state
-    move() {
+    move(cellWidth, cellHeight) {
         if (this.state === "up") this.position.y -= this.velocity.y;
         if (this.state === "down") this.position.y += this.velocity.y;
         if (this.state === "left") this.position.x -= this.velocity.x;
         if (this.state === "right") this.position.x += this.velocity.x;
+        this.indices = {
+            row: Math.floor(this.position.y / cellHeight),
+            col: Math.floor(this.position.x / cellWidth)
+        };
+        this.snapToGrid(cellWidth, cellHeight);
     }
 
     // Calculate angles for mouth opening of the pacman player and adjust mouth angles based on state and mouthRate
