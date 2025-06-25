@@ -1,0 +1,37 @@
+{
+  "files": {
+    "main.js": "/Pacman/static/js/main.fec8b6df.js",
+    "static/media/header.png": "/Pacman/static/media/header.836e7922372a9779932d.png",
+    "static/media/strong-pacman.png": "/Pacman/static/media/strong-pacman.7b704ef34c605cc3f405.png",
+    "static/media/happy-pacman.png": "/Pacman/static/media/happy-pacman.0f2f5d800210e2feac49.png",
+    "static/media/pacman_animation.gif": "/Pacman/static/media/pacman_animation.95587bac6be5a8eb5ae3.gif",
+    "index.html": "/Pacman/index.html",
+    "static/media/block.svg": "/Pacman/static/media/block.54804877763f46864ad07c66d7bcfcbc.svg",
+    "static/media/pipeCross.svg": "/Pacman/static/media/pipeCross.357b881070f44edfe1c22d9ef0b8d388.svg",
+    "static/media/jailBreak.svg": "/Pacman/static/media/jailBreak.c814653d3914ce20496979020fa87359.svg",
+    "static/media/capBottom.svg": "/Pacman/static/media/capBottom.452002967453bc127b48ba60a2f90118.svg",
+    "static/media/capRight.svg": "/Pacman/static/media/capRight.b7c3543949aa3e963debd18b4d14cc50.svg",
+    "static/media/capLeft.svg": "/Pacman/static/media/capLeft.32dac99f3a89c3881a5ce6672fcc4998.svg",
+    "static/media/capTop.svg": "/Pacman/static/media/capTop.84f694a25cbb436facfa075f5f6b73e8.svg",
+    "static/media/pipeConnectorBottom.svg": "/Pacman/static/media/pipeConnectorBottom.7c55e33f2fc9fd883550ec8a1b401f28.svg",
+    "static/media/pipeConnectorRight.svg": "/Pacman/static/media/pipeConnectorRight.34deb08e1c698c88aa431cadee6aa5de.svg",
+    "static/media/pipeCorner1.svg": "/Pacman/static/media/pipeCorner1.59e3353321c8de5a2fa8eaee3a91673c.svg",
+    "static/media/pipeCorner2.svg": "/Pacman/static/media/pipeCorner2.79629994e7c0564928caf404ce1b9524.svg",
+    "static/media/pipeCorner3.svg": "/Pacman/static/media/pipeCorner3.7f63d7e1f44e2e381c1c2b38b2a7c95e.svg",
+    "static/media/pipeCorner4.svg": "/Pacman/static/media/pipeCorner4.7c8662bd3931105734d1c0cdc4594b58.svg",
+    "static/media/pipeConnectorLeft.svg": "/Pacman/static/media/pipeConnectorLeft.be6a816393673c4c768fc6df4fb1e235.svg",
+    "static/media/pipeConnectorTop.svg": "/Pacman/static/media/pipeConnectorTop.6ef4e623b1e971a8de3ee5f2de1ad4a2.svg",
+    "static/media/jailBars.svg": "/Pacman/static/media/jailBars.3adaddd80e8995f5434c9bea6f6e69f2.svg",
+    "static/media/pipeHorizontal.svg": "/Pacman/static/media/pipeHorizontal.56f8a23f6b898b5057169142845867c7.svg",
+    "static/media/pipeVertical.svg": "/Pacman/static/media/pipeVertical.9fd3d8ac3a17f182be32a1ab3decb113.svg",
+    "static/media/pacman-bottom.svg": "/Pacman/static/media/pacman-bottom.0ef7765a76d0b109961f352db7ec9942.svg",
+    "static/media/pacman-right.svg": "/Pacman/static/media/pacman-right.e31af58842eb9338fe6ed45483c84a61.svg",
+    "static/media/pacman-left.svg": "/Pacman/static/media/pacman-left.405e41f1f52a40af47fd13b89e687333.svg",
+    "static/media/pacman-top.svg": "/Pacman/static/media/pacman-top.d995e07701b6fb49e5670fb5c33684dc.svg",
+    "static/media/pacman-whole.svg": "/Pacman/static/media/pacman-whole.40ca61ac8697a01a3b358ffb4eb738a0.svg",
+    "main.fec8b6df.js.map": "/Pacman/static/js/main.fec8b6df.js.map"
+  },
+  "entrypoints": [
+    "static/js/main.fec8b6df.js"
+  ]
+}
