@@ -1,6 +1,6 @@
 import { useContext, useEffect } from "react";
 import GameContext from "../../../store/gameContext";
-import PacmanImage from "../../../images/pacman/pacman.svg";
+import PacmanImage from "../../../images/pacman/pacman-right.svg";
 
 function Lives() {
   const gameContext = useContext(GameContext);
