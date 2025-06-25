@@ -20,7 +20,7 @@ class SimulatorGame {
         this.pellets = [];
 
         // Game Object Controllers
-        this.playerController = new BotPlayerController(this);
+        this.playerController = new BotPlayerController(this, true);
         this.ghostController = new GhostController(this);
 
         // Non-progressive move tracker

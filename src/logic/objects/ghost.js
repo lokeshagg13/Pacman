@@ -10,6 +10,7 @@ class Ghost {
         this.color = color;
         this.promixityRadius = promixityRadius;
         this.state = null;
+        this.distanceLimit = this.width * constants.MAP.DISTANCE_LIMIT;  // This is the min distance below which a ghost will be considered to have reached a target position
 
         // Initializing instance variables which are used in ghost controller
         this.randomSteps = 0;
@@ -76,6 +77,22 @@ class Ghost {
             col: Math.floor(this.position.x / cellWidth)
         };
         this.snapToGrid(cellWidth, cellHeight);
+    }
+
+    // Check if ghost has reached its current target position or not
+    hasReachedCurrentTarget() {
+        const ghostPosition = this.position;
+        const ghostCell = this.indices;
+        if (
+            ghostCell.row !== this.targetCell.row ||
+            ghostCell.col !== this.targetCell.col
+        ) return false;
+        const distanceFromTarget = Math.hypot(
+            ghostPosition.x - this.targetPosition.x,
+            ghostPosition.y - this.targetPosition.y
+        );
+        if (distanceFromTarget >= this.distanceLimit) return false;
+        return true;
     }
 
     isCollidingWithPlayer(player) {

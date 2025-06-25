@@ -27,6 +27,7 @@ const constants = {
         PELLET_SYMBOL: '.',
         JAIL_BLOCK_SYMBOL: 'J',
         JAIL_BREAK_SYMBOL: 'I',
+        DISTANCE_LIMIT: 1 / 6,  // (w.r.t. player radius x) This is the min distance below which a player will be considered to have reached a target position
         DIRECTIONS: ["up", "down", "left", "right"],
         ROW_OFFSET: { up: -1, down: 1, left: 0, right: 0 },
         COL_OFFSET: { up: 0, down: 0, left: -1, right: 1 }
@@ -45,6 +46,7 @@ const constants = {
         MAX_MOUTH_OPENING: 50 * Math.PI / 180,
         MOUTH_ANIMATION_SPEED: 0.1,    // Rate between 0 and 1
         TOTAL_LIVES: 3,
+        AVOID_GHOST_PROXIMITY_CELLS: 2,
     },
     GHOST: {
         COUNT: 4,

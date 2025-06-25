@@ -29,7 +29,7 @@ class Game {
         if (playerType === 'user') {
             this.playerController = new HumanPlayerController(this);
         } else {
-            this.playerController = new BotPlayerController(this);
+            this.playerController = new BotPlayerController(this, false);
         }
         this.ghostController = new GhostController(this);
 
@@ -167,7 +167,7 @@ class Game {
         if (this.playerType === "user") {
             this.playerController = new HumanPlayerController(this);
         } else {
-            this.playerController = new BotPlayerController(this);
+            this.playerController = new BotPlayerController(this, false);
         }
         this.ghostController = new GhostController(this);
         this.runJailBarsAnimation(true);

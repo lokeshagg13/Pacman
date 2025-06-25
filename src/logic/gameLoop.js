@@ -6,6 +6,7 @@ let game;
 // Handle key press
 function handleKeyDown(e) {
     if (game.isOnHold) return;
+    if (game.playerType !== "user") return;
     if (e.key in game.playerController.keyState) {
         e.preventDefault();
         game.playerController.keyState[e.key] = true;
@@ -17,6 +18,7 @@ function handleKeyDown(e) {
 // Handle key up
 function handleKeyUp(e) {
     if (game.isOnHold) return;
+    if (game.playerType !== "user") return;
     if (e.key in game.playerController.keyState) {
         e.preventDefault();
         game.playerController.keyState[e.key] = false;
@@ -27,6 +29,7 @@ function handleKeyUp(e) {
 
 export function handleSwipeOnCanvas(direction) {
     if (game.isOnHold) return;
+    if (game.playerType !== "user") return;
     if (direction in game.playerController.swipeState) {
         game.playerController.resetSwipeStates();
         game.playerController.swipeState[direction] = true;

@@ -1,4 +1,5 @@
 import constants from "../../store/constants";
+import PathFinder from "../bot/pathFinder";
 import Blueprint from "../world/blueprint";
 
 class GhostController {
@@ -8,17 +9,18 @@ class GhostController {
 
     constructor(game) {
         this.game = game;
+        this.movableGrid = null;
         this.randomStepLimit = constants.GHOST.MOVEMENT.RANDOM_STEP_LIMIT;
         this.pathUpdateInterval = constants.GHOST.MOVEMENT.PATH_UPDATE_INTERVAL;
         this.lastPathUpdateTime = null;
     }
 
     // Check if ghost is within the proximity of the player
-    isPlayerWithinGhostProximity(ghost) {
-        const { position: playerPosition } = this.game.player;
+    #isPlayerWithinGhostProximity(ghost) {
+        const { player } = this.game;
         const distance = {
-            x: ghost.position.x - playerPosition.x,
-            y: ghost.position.y - playerPosition.y
+            x: ghost.position.x - player.position.x,
+            y: ghost.position.y - player.position.y
         };
         return (
             (distance.x ** 2) / (ghost.promixityRadius.x ** 2) + (distance.y ** 2) / (ghost.promixityRadius.y ** 2) <= 1
@@ -26,8 +28,8 @@ class GhostController {
     }
 
     // Checks for a particular ghost's movement based on current position and next potential positions
-    isPositionalMovementValid(ghost, direction) {
-        const map = this.game.map;
+    #isPositionalMovementValid(ghost, direction) {
+        const { map } = this.game;
 
         if (!GhostController.directions.includes(direction)) {
             return false;
@@ -54,8 +56,8 @@ class GhostController {
     }
 
     // Checks for a particular ghost's movement based on current cell (row and col of the map) and next potential cell
-    isCellMovementValid(ghost, direction) {
-        const map = this.game.map;
+    #isCellMovementValid(ghost, direction) {
+        const { map } = this.game;
 
         const { row: ghostRow, col: ghostCol } = ghost.indices;
 
@@ -72,15 +74,15 @@ class GhostController {
     }
 
     // Combined checks of a particular ghost's positional and cell movement
-    isRandomMovementValid(ghost, direction) {
+    #isRandomMovementValid(ghost, direction) {
         return (
-            this.isPositionalMovementValid(ghost, direction) &&
-            this.isCellMovementValid(ghost, direction)
+            this.#isPositionalMovementValid(ghost, direction) &&
+            this.#isCellMovementValid(ghost, direction)
         );
     }
 
     // Get a random direction for ghost to move along
-    getRandomDirection(excludeDirections = []) {
+    #getRandomDirection(excludeDirections = []) {
         if (excludeDirections.length === 4) return null;
         let randomDirection = GhostController.directions[Math.floor(Math.random() * GhostController.directions.length)];
         while (excludeDirections.includes(randomDirection)) {
@@ -90,117 +92,124 @@ class GhostController {
     }
 
     // Update ghost's movement state randomly
-    updateGhostMovementRandomly(ghost) {
+    #updateGhostMovementStateRandomly(ghost) {
         if (
             !ghost.randomDirection ||
             ghost.randomSteps >= this.randomStepLimit ||
-            !this.isRandomMovementValid(ghost, ghost.state)
+            !this.#isRandomMovementValid(ghost, ghost.state)
         ) {
             const excludedDirections = ghost.randomDirection ? [ghost.randomDirection] : [];
-            let randomDirection = this.getRandomDirection(excludedDirections);
-            while (randomDirection && !this.isRandomMovementValid(ghost, randomDirection)) {
+            let randomDirection = this.#getRandomDirection(excludedDirections);
+            while (randomDirection && !this.#isRandomMovementValid(ghost, randomDirection)) {
                 excludedDirections.push(randomDirection);
-                randomDirection = this.getRandomDirection(excludedDirections);
+                randomDirection = this.#getRandomDirection(excludedDirections);
             }
             ghost.randomDirection = randomDirection;
             ghost.randomSteps = 0;
             ghost.changeState(randomDirection);
         }
-
         ghost.randomSteps += 1;
     }
 
-    // Recalculate Path to Player
-    recalculatePathToPlayer(ghost) {
-        const shortestPath = this.game.map.findShortestPath({
-            source: ghost.position,
-            destination: this.game.player.position
-        });
-        ghost.pathToPlayer = shortestPath || [];
-        ghost.pathIndex = 0;
-        ghost.targetCell = null;
-        ghost.targetPosition = null;
+    // Find the movable grid from the game's map, pellet positions as well as ghost positions
+    #updateMovableGrid() {
+        const { map } = this.game;
+
+        // 0 = movable cell and 1 = blocked cells
+        const grid = map.blueprint.map(row =>
+            row.map(cell =>
+                Blueprint.movableSymbols.includes(cell) ? 0 : 1
+            )
+        );
+
+        this.movableGrid = grid;
     }
 
-    // Update ghost's movement state along the path to the player
-    updateGhostMovementAlongPath(ghost) {
-        // Recalculate the path to player after some time
+    // Recalculate Path to Player
+    #recalculatePathToPlayer(ghost) {
+        const { player } = this.game;
+
+        ghost.targetCell = null;
+        ghost.targetPosition = null;
+        ghost.pathToPlayer = PathFinder.findPath(
+            ghost.indices,
+            player.indices,
+            this.movableGrid
+        );
+        ghost.pathIndex = 0;
+        if (ghost.pathToPlayer.length === 0) {
+            this.#updateGhostMovementStateRandomly(ghost);
+        }
+    }
+
+    // Update ghost's movement state based on  path towards the player while keeping away from walls (according to moval)
+    #updateGhostMovementStateBasedOnPath(ghost) {
+        const { map } = this.game;
         const now = new Date().getTime();
         if (now - this.lastPathUpdateTime > this.pathUpdateInterval) {
-            this.recalculatePathToPlayer(ghost);
+            this.#recalculatePathToPlayer(ghost);
             this.lastPathUpdateTime = now;
         }
 
-        // Update the pathIndex if current move is completed
-        if (ghost.pathIndex >= 0 && ghost.pathIndex < ghost.pathToPlayer.length) {
-            const currentCell = ghost.indices;
-
+        if (
+            ghost.pathIndex >= 0 &&
+            ghost.pathIndex < ghost.pathToPlayer.length
+        ) {
             if (!ghost.targetCell && !ghost.targetPosition) {
-                const currentDirection = ghost.pathToPlayer[ghost.pathIndex];
-                ghost.targetCell = {
-                    row: currentCell.row + GhostController.rowOffset[currentDirection],
-                    col: currentCell.col + GhostController.colOffset[currentDirection]
-                };
-                ghost.targetPosition = this.game.map.getCanvasPositionForArrayIndices({
+                const { row, col, direction } = ghost.pathToPlayer[ghost.pathIndex];
+                ghost.targetCell = { row, col };
+                ghost.targetPosition = map.getCanvasPositionForArrayIndices({
                     position: ghost.targetCell,
                     offset: { x: 0.5, y: 0.5 }
                 });
-                ghost.changeState(currentDirection);
+                ghost.changeState(direction);
             }
 
-            if (currentCell.row === ghost.targetCell.row && currentCell.col === ghost.targetCell.col) {
-                const distanceFromTarget = Math.hypot(
-                    ghost.position.x - ghost.targetPosition.x,
-                    ghost.position.y - ghost.targetPosition.y
-                );
-                if (distanceFromTarget < 1) {
-                    ghost.pathIndex += 1;
-                    if (ghost.pathIndex >= ghost.pathToPlayer.length) {
-                        this.recalculatePathToPlayer(ghost);
-                        this.lastPathUpdateTime = now;
-                        return;
-                    }
-                    const nextDirection = ghost.pathToPlayer[ghost.pathIndex];
-                    ghost.targetCell = {
-                        row: currentCell.row + GhostController.rowOffset[nextDirection],
-                        col: currentCell.col + GhostController.colOffset[nextDirection]
-                    };
-                    ghost.targetPosition = this.game.map.getCanvasPositionForArrayIndices({
-                        position: ghost.targetCell,
-                        offset: { x: 0.5, y: 0.5 }
-                    });
-                    ghost.changeState(nextDirection);
+            if (ghost.hasReachedCurrentTarget()) {
+                ghost.pathIndex += 1;
+                if (ghost.pathIndex >= ghost.pathToPlayer.length) {
+                    this.#recalculatePathToPlayer(ghost);
+                    this.lastPathUpdateTime = now;
+                    return;
                 }
+                const { row, col, direction } = ghost.pathToPlayer[ghost.pathIndex];
+                ghost.targetCell = { row, col };
+                ghost.targetPosition = map.getCanvasPositionForArrayIndices({
+                    position: ghost.targetCell,
+                    offset: { x: 0.5, y: 0.5 }
+                });
+                ghost.changeState(direction);
             } else {
-                ghost.changeState(ghost.pathToPlayer[ghost.pathIndex]);
+                const { direction } = ghost.pathToPlayer[ghost.pathIndex];
+                ghost.changeState(direction);
             }
         } else {
-            this.recalculatePathToPlayer(ghost);
+            this.#recalculatePathToPlayer(ghost);
             this.lastPathUpdateTime = now;
         }
     }
 
-    // Update ghost-related actions
+    // Move the ghost and adjust its position
+    #moveGhostCarefully(ghost) {
+        const { map } = this.game;
+        if (this.#isPositionalMovementValid(ghost, ghost.state)) {
+            ghost.move(map.cellWidth, map.cellHeight);
+        }
+    }
+
+    // Method to update ghosts
     update() {
-        const map = this.game.map;
-        this.game.ghosts.forEach((ghost) => {
+        const { ghosts } = this.game;
+        this.#updateMovableGrid();
+        ghosts.forEach((ghost) => {
             // Update movements
-            if (this.isPlayerWithinGhostProximity(ghost)) {
-                this.updateGhostMovementAlongPath(ghost);
+            if (this.#isPlayerWithinGhostProximity(ghost)) {
+                this.#updateGhostMovementStateBasedOnPath(ghost);
             } else {
-                this.updateGhostMovementRandomly(ghost);
+                this.#updateGhostMovementStateRandomly(ghost);
             }
 
-            // Move the ghost in the current state if the move is valid
-            if (this.isPositionalMovementValid(ghost, ghost.state)) {
-                ghost.move(map.cellWidth, map.cellHeight);
-            } else {
-                if (this.isPlayerWithinGhostProximity(ghost)) {
-                    this.updateGhostMovementAlongPath(ghost);
-                } else {
-                    this.updateGhostMovementRandomly(ghost);
-                }
-            }
+            this.#moveGhostCarefully(ghost);
         });
 
     }

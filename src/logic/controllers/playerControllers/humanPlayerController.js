@@ -24,17 +24,9 @@ class HumanPlayerController extends PlayerController {
         this.lastActionValue = "";
     }
 
-    // Reset swipe states
-    resetSwipeStates() {
-        for (let dir in this.swipeState) {
-            if (this.swipeState.hasOwnProperty(dir)) {
-                this.swipeState[dir] = false;
-            }
-        }
-    }
-
     // Update player's movement state based on key presses or swipes
-    updatePlayerMovement() {
+    #updatePlayerMovementStateBasedOnUserActions() {
+        const { player } = this.game;
         if (this.lastActionType === "key") {
             const directionKeys = {
                 w: "up", ArrowUp: "up",
@@ -44,17 +36,20 @@ class HumanPlayerController extends PlayerController {
             };
             const direction = directionKeys[this.lastActionValue];
             if (
-                direction && this.keyState[this.lastActionValue] &&
+                direction &&
+                this.keyState[this.lastActionValue] &&
                 this.isOverallPlayerMovementValid(direction)
             ) {
-                this.game.player.changeState(direction);
+                player.changeState(direction);
             }
         } else if (this.lastActionType === "swipe") {
             const direction = this.lastActionValue;
             if (
-                direction && this.swipeState[this.lastActionValue] && this.isOverallPlayerMovementValid(direction)
+                direction &&
+                this.swipeState[this.lastActionValue] &&
+                this.isOverallPlayerMovementValid(direction)
             ) {
-                this.game.player.changeState(direction);
+                player.changeState(direction);
             } else {
                 this.resetSwipeStates();
             }
@@ -62,7 +57,7 @@ class HumanPlayerController extends PlayerController {
     }
 
     // Move the player and adjust the position
-    movePlayerCarefully() {
+    #movePlayerCarefully() {
         const { player, map } = this.game;
 
         if (this.isPositionalMovementValid(player.state)) {
@@ -70,10 +65,19 @@ class HumanPlayerController extends PlayerController {
         }
     }
 
+    // Reset swipe states
+    resetSwipeStates() {
+        for (let dir in this.swipeState) {
+            if (this.swipeState.hasOwnProperty(dir)) {
+                this.swipeState[dir] = false;
+            }
+        }
+    }
+
     // Method to update player-related actions
     update() {
-        this.updatePlayerMovement();
-        this.movePlayerCarefully();
+        this.#updatePlayerMovementStateBasedOnUserActions();
+        this.#movePlayerCarefully();
     }
 }
 

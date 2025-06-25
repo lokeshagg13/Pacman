@@ -12,6 +12,7 @@ class Player {
         };
         this.state = null;
         this.dyingAngles = null;
+        this.distanceLimit = this.radius.x * constants.MAP.DISTANCE_LIMIT;  // This is the min distance below which a player will be considered to have reached a target position
 
         // Mouth animation properties
         this.mouthRate = 1; // Range: 0 (closed) to 1 (fully open)
