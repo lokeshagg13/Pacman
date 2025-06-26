@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.js": "/Pacman/static/js/main.fec8b6df.js",
+    "main.js": "/Pacman/static/js/main.3776b544.js",
     "static/media/header.png": "/Pacman/static/media/header.836e7922372a9779932d.png",
     "static/media/strong-pacman.png": "/Pacman/static/media/strong-pacman.7b704ef34c605cc3f405.png",
     "static/media/happy-pacman.png": "/Pacman/static/media/happy-pacman.0f2f5d800210e2feac49.png",
@@ -29,9 +29,9 @@
     "static/media/pacman-left.svg": "/Pacman/static/media/pacman-left.405e41f1f52a40af47fd13b89e687333.svg",
     "static/media/pacman-top.svg": "/Pacman/static/media/pacman-top.d995e07701b6fb49e5670fb5c33684dc.svg",
     "static/media/pacman-whole.svg": "/Pacman/static/media/pacman-whole.40ca61ac8697a01a3b358ffb4eb738a0.svg",
-    "main.fec8b6df.js.map": "/Pacman/static/js/main.fec8b6df.js.map"
+    "main.3776b544.js.map": "/Pacman/static/js/main.3776b544.js.map"
   },
   "entrypoints": [
-    "static/js/main.fec8b6df.js"
+    "static/js/main.3776b544.js"
   ]
 }
