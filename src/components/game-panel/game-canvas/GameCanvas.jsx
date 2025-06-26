@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef } from "react";
 import GameContext from "../../../store/gameContext";
-import constants from "../../../store/constants";
+import gameConfig from "../../../logic/gameConfig";
 import { handleSwipeOnCanvas } from "../../../logic/gameLoop";
 
 function GameCanvas() {
@@ -10,8 +10,8 @@ function GameCanvas() {
 
   useEffect(() => {
     const gameCanvas = gameContext.gameCanvasRef.current;
-    const aspectRatio = constants.MAP.ASPECT_RATIO;
-    gameCanvas.height = constants.MAP.RES_HEIGHT;
+    const aspectRatio = gameConfig.MAP.ASPECT_RATIO;
+    gameCanvas.height = gameConfig.MAP.RES_HEIGHT;
     gameCanvas.width = gameCanvas.height * aspectRatio;
   }, [gameContext.gameCanvasRef]);
 

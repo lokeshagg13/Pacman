@@ -1,11 +1,11 @@
-import constants from "../../store/constants";
+import gameConfig from "../gameConfig";
 import blueprints from "./data/blueprints.json";
 
 class Blueprint {
-    static spawnSymbols = Object.values(constants.MAP.SPAWN_SYMBOL);
+    static spawnSymbols = Object.values(gameConfig.MAP.SPAWN_SYMBOL);
     static movableSymbols = Blueprint.spawnSymbols.concat([
-        constants.MAP.PELLET_SYMBOL, 
-        constants.MAP.EMPTY_SPACE_SYMBOL
+        gameConfig.MAP.PELLET_SYMBOL, 
+        gameConfig.MAP.EMPTY_SPACE_SYMBOL
     ]);
 
     static fetch() {

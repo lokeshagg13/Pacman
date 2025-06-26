@@ -1,4 +1,4 @@
-import constants from "../store/constants";
+import gameConfig from "./gameConfig";
 import Game from "./game";
 
 let game;
@@ -41,7 +41,7 @@ export function handleSwipeOnCanvas(direction) {
 export function initGame(gameCanvas, playerType, difficultyLevel, stateHandlers) {
     game = new Game(gameCanvas, playerType, difficultyLevel, stateHandlers);
 
-    const frameDuration = 1000 / constants.GAME.TARGET_FPS;
+    const frameDuration = 1000 / gameConfig.GAME.TARGET_FPS;
     let lastTime = performance.now();
     let animationFrameId;
     let isPaused = false;

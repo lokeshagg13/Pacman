@@ -1,4 +1,4 @@
-import constants from "../../../store/constants";
+import gameConfig from "../../gameConfig";
 
 class Player {
     constructor({ position, indices, velocity, radius }) {
@@ -7,17 +7,17 @@ class Player {
         this.velocity = velocity;
         this.radius = radius;
         this.visualRadius = {
-            x: constants.PLAYER.VISUAL_RADIUS_PERC * radius.x,
-            y: constants.PLAYER.VISUAL_RADIUS_PERC * radius.y
+            x: gameConfig.PLAYER.VISUAL_RADIUS_PERC * radius.x,
+            y: gameConfig.PLAYER.VISUAL_RADIUS_PERC * radius.y
         };
         this.state = null;
         this.dyingAngles = null;
-        this.distanceLimit = this.radius.x * constants.MAP.DISTANCE_LIMIT;  // This is the min distance below which a player will be considered to have reached a target position
+        this.distanceLimit = this.radius.x * gameConfig.MAP.DISTANCE_LIMIT;  // This is the min distance below which a player will be considered to have reached a target position
 
         // Mouth animation properties
         this.mouthRate = 1; // Range: 0 (closed) to 1 (fully open)
         this.mouthDirection = -1; // 1 for opening, -1 for closing
-        this.mouthAnimationSpeed = constants.PLAYER.MOUTH_ANIMATION_SPEED; // Rate of change for mouth animation
+        this.mouthAnimationSpeed = gameConfig.PLAYER.MOUTH_ANIMATION_SPEED; // Rate of change for mouth animation
     }
 
     // Change current state of the player
@@ -80,7 +80,7 @@ class Player {
 
     // Calculate angles for mouth opening of the pacman player and adjust mouth angles based on state and mouthRate
     getMouthingAngles() {
-        const currentOpening = constants.PLAYER.MAX_MOUTH_OPENING * this.mouthRate;
+        const currentOpening = gameConfig.PLAYER.MAX_MOUTH_OPENING * this.mouthRate;
         let startAngle = 0 * Math.PI + currentOpening;
         let endAngle = 2 * Math.PI - currentOpening;
         if (this.state === "down") {
@@ -109,7 +109,7 @@ class Player {
         let currentStartAngle = (-90 * Math.PI) / 180;
         let currentEndAngle = (270 * Math.PI) / 180;
         const targetAngle = (90 * Math.PI) / 180;
-        const step = constants.ANIMATIONS.DYING_PLAYER_ANIMATION_RATE;
+        const step = gameConfig.ANIMATIONS.DYING_PLAYER_ANIMATION_RATE;
 
         // Update the dying state for the player
         this.state = "dying";
@@ -152,7 +152,7 @@ class Player {
             endAngle
         );
         ctx.lineTo(0, 0);
-        ctx.fillStyle = constants.PLAYER.COLOR;
+        ctx.fillStyle = gameConfig.PLAYER.COLOR;
         ctx.fill();
         ctx.closePath();
         ctx.restore();

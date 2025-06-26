@@ -1,4 +1,4 @@
-import constants from "../../store/constants";
+import gameConfig from "../gameConfig";
 
 class Ghost {
     constructor({ position, indices, velocity, width, height, color = "red", promixityRadius = null }) {
@@ -10,7 +10,7 @@ class Ghost {
         this.color = color;
         this.promixityRadius = promixityRadius;
         this.state = null;
-        this.distanceLimit = this.width * constants.MAP.DISTANCE_LIMIT;  // This is the min distance below which a ghost will be considered to have reached a target position
+        this.distanceLimit = this.width * gameConfig.MAP.DISTANCE_LIMIT;  // This is the min distance below which a ghost will be considered to have reached a target position
 
         // Initializing instance variables which are used in ghost controller
         this.randomSteps = 0;
@@ -131,8 +131,8 @@ class Ghost {
     // Draw the ghost
     draw(ctx, { showGhostProximityCircle = null }) {
         const { top, left } = this.getCurrentBoundingPositions();
-        const legRadiusX = constants.GHOST.LEGS.RADIUS_PERC * this.width;
-        const legRadiusY = constants.GHOST.LEGS.RADIUS_PERC * this.height;
+        const legRadiusX = gameConfig.GHOST.LEGS.RADIUS_PERC * this.width;
+        const legRadiusY = gameConfig.GHOST.LEGS.RADIUS_PERC * this.height;
 
         // Draw promixity circle if required
         if (showGhostProximityCircle) {
@@ -159,26 +159,26 @@ class Ghost {
         ctx.fill();
 
         // Draw eyes
-        const eyeRadius = constants.GHOST.EYES.RADIUS_PERC * this.width;
-        const eyeOffsetX = constants.GHOST.EYES.OFFSET_PERC.X * this.width;
-        const eyeOffsetY = constants.GHOST.EYES.OFFSET_PERC.Y * this.height;
+        const eyeRadius = gameConfig.GHOST.EYES.RADIUS_PERC * this.width;
+        const eyeOffsetX = gameConfig.GHOST.EYES.OFFSET_PERC.X * this.width;
+        const eyeOffsetY = gameConfig.GHOST.EYES.OFFSET_PERC.Y * this.height;
         ctx.beginPath();
         ctx.arc(left + eyeOffsetX, top + eyeOffsetY, eyeRadius, 0, Math.PI * 2);
         ctx.arc(left + this.width - eyeOffsetX, top + eyeOffsetY, eyeRadius, 0, Math.PI * 2);
-        ctx.fillStyle = constants.GHOST.EYES.COLOR;
+        ctx.fillStyle = gameConfig.GHOST.EYES.COLOR;
         ctx.fill();
 
         // Draw pupils
-        const pupilRadius = constants.GHOST.EYES.PUPILS.RADIUS_PERC * eyeRadius;
+        const pupilRadius = gameConfig.GHOST.EYES.PUPILS.RADIUS_PERC * eyeRadius;
         ctx.beginPath();
         ctx.arc(left + eyeOffsetX, top + eyeOffsetY, pupilRadius, 0, Math.PI * 2);
         ctx.arc(left + this.width - eyeOffsetX, top + eyeOffsetY, pupilRadius, 0, Math.PI * 2);
-        ctx.fillStyle = constants.GHOST.EYES.PUPILS.COLOR;
+        ctx.fillStyle = gameConfig.GHOST.EYES.PUPILS.COLOR;
         ctx.fill();
 
         // Draw legs (three ellipses at the bottom)
         ctx.beginPath();
-        for (let i = 0; i < constants.GHOST.LEGS.COUNT; i++) {
+        for (let i = 0; i < gameConfig.GHOST.LEGS.COUNT; i++) {
             const legX = left + (2 * i + 1) * legRadiusX;
             const legY = top + this.height - legRadiusY;
             ctx.ellipse(legX, legY, legRadiusX, legRadiusY, 0, 0, Math.PI * 2);

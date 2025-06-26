@@ -1,4 +1,4 @@
-import constants from "../../store/constants";
+import gameConfig from "../gameConfig";
 import Blueprint from "../world/blueprint";
 import Map from "../world/map";
 import Pellet from "../objects/pellet";
@@ -39,14 +39,14 @@ class SimulatorGame {
 
     // Create and Resize pellets based on map's cell dimensions
     createAndResizePellets(cellWidth, cellHeight) {
-        const pelletRadiusX = constants.PELLET.RADIUS_PERC * cellWidth;
-        const pelletRadiusY = constants.PELLET.RADIUS_PERC * cellHeight;
+        const pelletRadiusX = gameConfig.PELLET.RADIUS_PERC * cellWidth;
+        const pelletRadiusY = gameConfig.PELLET.RADIUS_PERC * cellHeight;
 
         this.pellets = [];
 
         this.blueprint.forEach((row, i) => {
             row.forEach((symbol, j) => {
-                if (symbol === constants.MAP.PELLET_SYMBOL) {
+                if (symbol === gameConfig.MAP.PELLET_SYMBOL) {
                     const { x, y } = this.map.getCanvasPositionForArrayIndices({
                         position: { row: i, col: j },
                         offset: { x: 0.5, y: 0.5 }
@@ -67,12 +67,12 @@ class SimulatorGame {
 
     // Spawn and Resize the pacman player based on map's cell dimensions and canvas dimensions
     spawnAndResizePlayer(cellWidth, cellHeight) {
-        const playerRadiusX = Math.floor(constants.PLAYER.RADIUS_PERC * cellWidth);
-        const playerRadiusY = Math.floor(constants.PLAYER.RADIUS_PERC * cellHeight);
-        const playerVelocityX = constants.PLAYER.SIMULATOR_VELOCITY_PERC * this.canvas.width;
-        const playerVelocityY = constants.PLAYER.SIMULATOR_VELOCITY_PERC * this.canvas.height;
+        const playerRadiusX = Math.floor(gameConfig.PLAYER.RADIUS_PERC * cellWidth);
+        const playerRadiusY = Math.floor(gameConfig.PLAYER.RADIUS_PERC * cellHeight);
+        const playerVelocityX = gameConfig.PLAYER.SIMULATOR_VELOCITY_PERC * this.canvas.width;
+        const playerVelocityY = gameConfig.PLAYER.SIMULATOR_VELOCITY_PERC * this.canvas.height;
         const { row, col } = Blueprint.findElementInBlueprint(
-            constants.MAP.SPAWN_SYMBOL.PLAYER_ORIGIN,
+            gameConfig.MAP.SPAWN_SYMBOL.PLAYER_ORIGIN,
             this.blueprint
         );
         const { x, y } = this.map.getCanvasPositionForArrayIndices({
@@ -90,13 +90,13 @@ class SimulatorGame {
 
     // Spawn and Resize the ghosts based on map's cell dimensions and canvas dimensions
     spawnAndResizeGhosts(cellWidth, cellHeight) {
-        const ghostWidth = Math.floor(constants.GHOST.WIDTH_PERC * cellWidth);
-        const ghostHeight = Math.floor(constants.GHOST.HEIGHT_PERC * cellHeight);
-        const ghostVelocityX = constants.GHOST.SIMULATOR_VELOCITY_PERC * this.canvas.width;
-        const ghostVelocityY = constants.GHOST.SIMULATOR_VELOCITY_PERC * this.canvas.height;
+        const ghostWidth = Math.floor(gameConfig.GHOST.WIDTH_PERC * cellWidth);
+        const ghostHeight = Math.floor(gameConfig.GHOST.HEIGHT_PERC * cellHeight);
+        const ghostVelocityX = gameConfig.GHOST.SIMULATOR_VELOCITY_PERC * this.canvas.width;
+        const ghostVelocityY = gameConfig.GHOST.SIMULATOR_VELOCITY_PERC * this.canvas.height;
         const proximityRadiusPerc = 0.8;    // For Hard Level
         const { row, col } = Blueprint.findElementInBlueprint(
-            constants.MAP.SPAWN_SYMBOL.GHOST_ORIGIN,
+            gameConfig.MAP.SPAWN_SYMBOL.GHOST_ORIGIN,
             this.blueprint
         );
         const { x, y } = this.map.getCanvasPositionForArrayIndices({
@@ -106,7 +106,7 @@ class SimulatorGame {
 
         this.ghosts = [];
 
-        for (let i = 0; i < constants.GHOST.COUNT; i++) {
+        for (let i = 0; i < gameConfig.GHOST.COUNT; i++) {
             this.ghosts.push(
                 new Ghost({
                     position: { x, y },
@@ -114,7 +114,7 @@ class SimulatorGame {
                     velocity: { x: ghostVelocityX, y: ghostVelocityY },
                     width: ghostWidth,
                     height: ghostHeight,
-                    color: constants.GHOST.COLORS[i],
+                    color: gameConfig.GHOST.COLORS[i],
                     promixityRadius: {
                         x: proximityRadiusPerc * this.canvas.width,
                         y: proximityRadiusPerc * this.canvas.height
@@ -381,7 +381,7 @@ class SimulatorGame {
         });
         this.ghosts.forEach((ghost) => {
             ghost.draw(ctx, {
-                showGhostProximityCircle: constants.GHOST.MOVEMENT.SHOW_PROXIMITY_CIRCLE
+                showGhostProximityCircle: gameConfig.GHOST.MOVEMENT.SHOW_PROXIMITY_CIRCLE
             });
         });
         this.player.draw(ctx);

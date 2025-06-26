@@ -1,10 +1,10 @@
-import constants from "../../../store/constants";
+import gameConfig from "../../gameConfig";
 import Blueprint from "../../world/blueprint";
 
 class PlayerController {
-    static directions = constants.MAP.DIRECTIONS;
-    static rowOffset = constants.MAP.ROW_OFFSET;
-    static colOffset = constants.MAP.COL_OFFSET;
+    static directions = gameConfig.MAP.DIRECTIONS;
+    static rowOffset = gameConfig.MAP.ROW_OFFSET;
+    static colOffset = gameConfig.MAP.COL_OFFSET;
 
     constructor(game) {
         this.game = game;

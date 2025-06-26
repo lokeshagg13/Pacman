@@ -1,16 +1,16 @@
-import constants from "../../store/constants";
-import PathFinder from "../bot/pathFinder";
+import gameConfig from "../gameConfig";
+import PathFinder from "../world/pathFinder";
 import Blueprint from "../world/blueprint";
 
 class GhostController {
-    static directions = constants.MAP.DIRECTIONS;
-    static rowOffset = constants.MAP.ROW_OFFSET;
-    static colOffset = constants.MAP.COL_OFFSET;
+    static directions = gameConfig.MAP.DIRECTIONS;
+    static rowOffset = gameConfig.MAP.ROW_OFFSET;
+    static colOffset = gameConfig.MAP.COL_OFFSET;
 
     constructor(game) {
         this.game = game;
-        this.randomStepLimit = constants.GHOST.MOVEMENT.RANDOM_STEP_LIMIT;
-        this.pathUpdateInterval = constants.GHOST.MOVEMENT.PATH_UPDATE_INTERVAL;
+        this.randomStepLimit = gameConfig.GHOST.MOVEMENT.RANDOM_STEP_LIMIT;
+        this.pathUpdateInterval = gameConfig.GHOST.MOVEMENT.PATH_UPDATE_INTERVAL;
         this.lastPathUpdateTime = null;
     }
 
@@ -120,7 +120,7 @@ class GhostController {
             ghost.indices,
             player.indices,
             map.movableGrid,
-            [constants.MAP.CELL_MOBILITY_STATES.BLOCKED]    // For ghosts, the ghost proximity cells are not blocked at all
+            [gameConfig.MAP.CELL_MOBILITY_STATES.BLOCKED]    // For ghosts, the ghost proximity cells are not blocked at all
         );
         ghost.pathIndex = 0;
         if (ghost.pathToPlayer.length === 0) {

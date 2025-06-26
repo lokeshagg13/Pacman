@@ -1,4 +1,4 @@
-import constants from "../../store/constants";
+import gameConfig from "../gameConfig";
 import Blueprint from "./blueprint";
 import Boundary from "./boundary";
 
@@ -38,7 +38,7 @@ class Map {
     #generateMap() {
         this.blueprint.forEach((row, i) => {
             row.forEach((symbol, j) => {
-                if (symbol === constants.MAP.JAIL_BLOCK_SYMBOL) {
+                if (symbol === gameConfig.MAP.JAIL_BLOCK_SYMBOL) {
                     this.jailCells.push({ row: i, col: j });
                 }
                 if (Blueprint.movableSymbols.includes(symbol)) {
@@ -60,18 +60,18 @@ class Map {
             });
             if (show) {
                 // Reappear jail bars
-                this.blueprint[row][col] = constants.MAP.JAIL_BLOCK_SYMBOL;
+                this.blueprint[row][col] = gameConfig.MAP.JAIL_BLOCK_SYMBOL;
                 this.#removeBoundariesWithCanvasPosition({ x, y });
-                this.#addBoundary(constants.MAP.JAIL_BLOCK_SYMBOL, { x, y });
+                this.#addBoundary(gameConfig.MAP.JAIL_BLOCK_SYMBOL, { x, y });
             } else {
                 // Disappear jail bars
                 this.#removeBoundariesWithCanvasPosition({ x, y });
                 this.blueprint[row][col] =
                     permanent ?
-                        constants.MAP.EMPTY_SPACE_SYMBOL :
-                        constants.MAP.JAIL_BREAK_SYMBOL;
+                        gameConfig.MAP.EMPTY_SPACE_SYMBOL :
+                        gameConfig.MAP.JAIL_BREAK_SYMBOL;
                 if (!permanent) {
-                    this.#addBoundary(constants.MAP.JAIL_BREAK_SYMBOL, { x, y });
+                    this.#addBoundary(gameConfig.MAP.JAIL_BREAK_SYMBOL, { x, y });
                 }
             }
         });
@@ -85,7 +85,7 @@ class Map {
             });
             this.#removeBoundariesWithCanvasPosition({ x, y });
             this.blueprint[row][col] =
-                constants.MAP.EMPTY_SPACE_SYMBOL;
+                gameConfig.MAP.EMPTY_SPACE_SYMBOL;
         });
     }
 
@@ -115,8 +115,8 @@ class Map {
         const grid = this.blueprint.map(row =>
             row.map(cell =>
                 Blueprint.movableSymbols.includes(cell) ?
-                    constants.MAP.CELL_MOBILITY_STATES.MOVABLE :
-                    constants.MAP.CELL_MOBILITY_STATES.BLOCKED
+                    gameConfig.MAP.CELL_MOBILITY_STATES.MOVABLE :
+                    gameConfig.MAP.CELL_MOBILITY_STATES.BLOCKED
             )
         );
         this.movableGrid = grid;
@@ -127,8 +127,8 @@ class Map {
         const { row: playerRow, col: playerCol } = player.indices;
         ghosts.forEach(ghost => {
             const { row: ghostRow, col: ghostCol } = ghost.indices;
-            const rowProximity = constants.PLAYER.AVOID_GHOST_PROXIMITY_CELLS;
-            const colProximity = constants.PLAYER.AVOID_GHOST_PROXIMITY_CELLS;
+            const rowProximity = gameConfig.PLAYER.AVOID_GHOST_PROXIMITY_CELLS;
+            const colProximity = gameConfig.PLAYER.AVOID_GHOST_PROXIMITY_CELLS;
 
             // Determine where the player is relative to the ghost
             const isAbove = playerRow < ghostRow;
@@ -152,7 +152,7 @@ class Map {
                             (isRight && c <= ghostCol);   // Right side
 
                         if (isInsideProximity) {
-                            grid[r][c] = constants.MAP.CELL_MOBILITY_STATES.GHOST_PROXIMITY; // Marking it as unsafe to move into
+                            grid[r][c] = gameConfig.MAP.CELL_MOBILITY_STATES.GHOST_PROXIMITY; // Marking it as unsafe to move into
                         }
                     }
                 }
@@ -171,7 +171,7 @@ class Map {
             if (!this.movableGrid) return;
             this.movableGrid.forEach((rowArray, row) => {
                 rowArray.forEach((cell, col) => {
-                    if (cell !== constants.MAP.CELL_MOBILITY_STATES.GHOST_PROXIMITY) return;
+                    if (cell !== gameConfig.MAP.CELL_MOBILITY_STATES.GHOST_PROXIMITY) return;
                     const { x, y } = this.getCanvasPositionForArrayIndices({
                         position: { row, col },
                         offset: { x: 0, y: 0 }

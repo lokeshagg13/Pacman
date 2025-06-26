@@ -1,14 +1,14 @@
 import { useContext, useEffect } from "react";
 import SimulatorContext from "../../store/simulatorContext";
-import constants from "../../store/constants";
+import gameConfig from "../../logic/gameConfig";
 
 function SimulatorCanvas() {
   const simulatorContext = useContext(SimulatorContext);
 
   useEffect(() => {
     const simulatorCanvas = simulatorContext.simulatorCanvasRef.current;
-    const aspectRatio = constants.MAP.ASPECT_RATIO;
-    simulatorCanvas.height = constants.MAP.RES_HEIGHT;
+    const aspectRatio = gameConfig.MAP.ASPECT_RATIO;
+    simulatorCanvas.height = gameConfig.MAP.RES_HEIGHT;
     simulatorCanvas.width = simulatorCanvas.height * aspectRatio;
   }, [simulatorContext.simulatorCanvasRef]);
 

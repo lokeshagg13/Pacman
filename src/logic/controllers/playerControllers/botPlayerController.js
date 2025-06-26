@@ -1,5 +1,5 @@
-import constants from "../../../store/constants";
-import PathFinder from "../../bot/pathFinder";
+import gameConfig from "../../gameConfig";
+import PathFinder from "../../world/pathFinder";
 import PlayerController from "./playerController";
 
 class BotPlayerController extends PlayerController {
@@ -46,7 +46,7 @@ class BotPlayerController extends PlayerController {
                 newRow < map.numRows &&
                 newCol < map.numCols &&
                 this.#isCellSafeFromGhosts({ row: newRow, col: newCol }) &&
-                map.movableGrid[newRow][newCol] === constants.MAP.CELL_MOBILITY_STATES.MOVABLE
+                map.movableGrid[newRow][newCol] === gameConfig.MAP.CELL_MOBILITY_STATES.MOVABLE
 
             ) {
                 if (!safeDirections.includes(dir))
@@ -86,7 +86,7 @@ class BotPlayerController extends PlayerController {
             player.indices,
             nearestPellet.cell,
             map.movableGrid,
-            [constants.MAP.CELL_MOBILITY_STATES.BLOCKED, constants.MAP.CELL_MOBILITY_STATES.GHOST_PROXIMITY]    // For bot players, ghost proximity cells are also blocked
+            [gameConfig.MAP.CELL_MOBILITY_STATES.BLOCKED, gameConfig.MAP.CELL_MOBILITY_STATES.GHOST_PROXIMITY]    // For bot players, ghost proximity cells are also blocked
         );
         player.pathIndex = 0;
         if (player.pathToNearestPellet.length === 0) {

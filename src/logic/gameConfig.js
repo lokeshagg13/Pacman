@@ -1,4 +1,4 @@
-const constants = {
+const config = {
     GAME: {
         TARGET_FPS: 60,
         DIFFICULTY_TYPES: [
@@ -27,6 +27,11 @@ const constants = {
         PELLET_SYMBOL: '.',
         JAIL_BLOCK_SYMBOL: 'J',
         JAIL_BREAK_SYMBOL: 'I',
+        CELL_MOBILITY_STATES: {
+            MOVABLE: 0,
+            BLOCKED: 1,
+            GHOST_PROXIMITY: 2
+        },
         DISTANCE_LIMIT: 1 / 6,  // (w.r.t. player radius x) This is the min distance below which a player will be considered to have reached a target position
         DIRECTIONS: ["up", "down", "left", "right"],
         ROW_OFFSET: { up: -1, down: 1, left: 0, right: 0 },
@@ -77,7 +82,8 @@ const constants = {
         VELOCITY_PERC: 0.01 / 8,    // w.r.t CANVAS width and height
         SIMULATOR_VELOCITY_PERC: 0.04 / 8,    // w.r.t CANVAS width and height
         MOVEMENT: {
-            SHOW_PROXIMITY: false,
+            SHOW_PROXIMITY_CIRCLE: false,
+            SHOW_PROXIMITY_GRID: false,
             RANDOM_STEP_LIMIT: 1000,
             PATH_UPDATE_INTERVAL: 1000 // 10 seconds
         },
@@ -89,4 +95,4 @@ const constants = {
     }
 }
 
-export default constants;
+export default config;

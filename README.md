@@ -4,15 +4,15 @@
 
 This is a **React-based Pacman game** that supports:
 
-* **User Mode:** Play the game manually using keyboard controls.
-* **Bot Mode:** Watch an AI bot navigate the map to collect all pellets while avoiding ghosts. The bot can be trained using the **NEAT (NeuroEvolution of Augmenting Topologies)** algorithm to improve its gameplay.
+- **User Mode:** Play the game manually using keyboard controls.
+- **Bot Mode:** Watch an AI bot navigate the map to collect all pellets while avoiding ghosts. The bot can be trained using the **NEAT (NeuroEvolution of Augmenting Topologies)** algorithm to improve its gameplay.
 
 ## Features
 
-* **Dynamic Gameplay:** Supports both human players and AI bot-controlled players.
-* **Training Mode:** Train the bot using NEAT to optimize its performance.
-* **Interactive Interface:** Intuitive controls and visuals for an engaging experience.
-* **Customizable Maps:** Maps can be designed or modified using the game's blueprint configuration.
+- **Dynamic Gameplay:** Supports both human players and AI bot-controlled players.
+- **Training Mode:** Train the bot using NEAT to optimize its performance.
+- **Interactive Interface:** Intuitive controls and visuals for an engaging experience.
+- **Customizable Maps:** Maps can be designed or modified using the game's blueprint configuration.
 
 ## File Structure
 
@@ -39,8 +39,8 @@ Pacman/
 
 ### Prerequisites
 
-* **Node.js** (v16+)
-* **npm** or **yarn**
+- **Node.js** (v16+)
+- **npm** or **yarn**
 
 ### Installation
 
@@ -50,6 +50,7 @@ Pacman/
    git clone https://github.com/your-repo/pacman-game.git
    cd pacman-game
    ```
+
 2. Install dependencies:
 
    ```bash
@@ -63,50 +64,53 @@ Pacman/
    ```bash
    npm start
    ```
+
 2. Open your browser and navigate to `http://localhost:3000`.
 
 ## Gameplay
 
 ### User Mode
 
-* Use keyboard controls:
+- Use keyboard controls:
 
-  * `W` or `Up Arrow`: Move Up
-  * `A` or `Left Arrow`: Move Left
-  * `S` or `Down Arrow`: Move Down
-  * `D` or `Right Arrow`: Move Right
-* Collect all pellets to win while avoiding ghosts.
+  - `W` or `Up Arrow`: Move Up
+  - `A` or `Left Arrow`: Move Left
+  - `S` or `Down Arrow`: Move Down
+  - `D` or `Right Arrow`: Move Right
+
+- Collect all pellets to win while avoiding ghosts.
 
 ### Bot Mode
 
-* Let the AI bot play the game.
-* The bot uses the NEAT algorithm to train and improve its gameplay.
-* Start the simulator to watch the bot learn and evolve.
+- Let the AI bot play the game.
+- The bot uses the NEAT algorithm to train and improve its gameplay.
+- Start the simulator to watch the bot learn and evolve.
 
 ### Simulator
 
-* Access the simulator panel to:
+- Access the simulator panel to:
 
-  * View bot training logs.
-  * Monitor the bot's fitness score and progress.
-  * Resume or pause training.
+  - View bot training logs.
+  - Monitor the bot's fitness score and progress.
+  - Resume or pause training.
 
 ## NEAT Algorithm
 
-Refer to [NEAT.md](./NEAT.md) for detailed implementation and training parameters.
+Refer to [NEAT.md](./resources/NEAT.md) for detailed implementation and training parameters.
 
 ## Development Notes
 
 ### Key Components
 
-* **Game Logic:** Core gameplay handled in `logic/`.
-* **AI Training:** Uses `logic/simulator/` and `logic/bot/` for bot AI.
-* **React Components:** UI and controls in `components/`.
+- **Game Logic:** Core gameplay handled in `logic/`.
+- **AI Training:** Uses `logic/simulator/` and `logic/bot/` for bot AI.
+- **React Components:** UI and controls in `components/`.
 
 ### Customization
 
-* Modify game maps in `logic/world/data/blueprints.json`.
-* Adjust bot training parameters in `logic/bot/config.js`.
+- Modify game maps in `logic/world/data/blueprints.json`.
+- Adjust game related parameters in `logic/gameConfig.js` and to know more about these config parameters, visit [GAMECONFIG.md](./resources/GAMECONFIG.md)
+- Adjust bot training parameters in `logic/bot/config.js`.
 
 ## Contributing
 

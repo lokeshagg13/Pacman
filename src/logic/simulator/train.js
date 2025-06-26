@@ -1,8 +1,8 @@
 import { GenomeBuilder, Population } from "neat-javascript";
 
-import config from "../bot/config";
 import SimulatorGame from "./game";
-import constants from "../../store/constants";
+import simulatorConfig from "./config";
+import gameConfig from "../gameConfig";
 import { findAverageFitness, findAvgGameDuration, findBestGameDuration, saveBestGenome } from "./utils";
 
 let gameDurations = [];
@@ -53,7 +53,7 @@ function guidePacman(genome, simulatorGame) {
 function trainAI(genome, canvas, isSimulatorRunning, updateLog) {
     return new Promise((resolve) => {
         let simulatorGame = new SimulatorGame(canvas);
-        const frameDuration = 1000 / constants.GAME.TARGET_FPS;
+        const frameDuration = 1000 / gameConfig.GAME.TARGET_FPS;
         let startTime = performance.now();
         let lastTime = performance.now();
         let animationFrameId;
@@ -112,9 +112,9 @@ async function evalGenomes(genomes, canvas, updateLog, isSimulatorRunning) {
 
 export async function runSimulation(canvas, updateLog, isSimulatorRunning) {
     // Create a new population with your configuration
-    const population = new Population(config);
+    const population = new Population(simulatorConfig);
     // For each generation
-    for (let i = 0; i < config.generations; i++) {
+    for (let i = 0; i < simulatorConfig.generations; i++) {
         if (!isSimulatorRunning()) break;
         updateLog({ generation: i + 1 });
         gameDurations = [];
@@ -137,13 +137,13 @@ export async function runSimulation(canvas, updateLog, isSimulatorRunning) {
 
 export async function resumeSimulation(canvas, generationNum, savedGenomeData, updateLog, isSimulatorRunning) {
     // Create a new population with your configuration
-    const population = new Population(config);
-    const savedGenome = GenomeBuilder.loadGenome(JSON.stringify(savedGenomeData), config);
+    const population = new Population(simulatorConfig);
+    const savedGenome = GenomeBuilder.loadGenome(JSON.stringify(savedGenomeData), simulatorConfig);
 
     population.genomes = population.genomes.map(_ => savedGenome);
 
     // For each generation
-    for (let i = generationNum - 1; i < config.generations; i++) {
+    for (let i = generationNum - 1; i < simulatorConfig.generations; i++) {
         if (!isSimulatorRunning()) break;
         updateLog({ generation: i + 1 });
         gameDurations = [];

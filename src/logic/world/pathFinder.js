@@ -1,4 +1,4 @@
-import constants from "../../store/constants";
+import gameConfig from "../gameConfig";
 
 class PathFinder {
     static getHeuristicCost(currentCell, destCell) {
@@ -7,11 +7,11 @@ class PathFinder {
     }
 
     static getNeighbors(currentCell, movableGrid, blockedCells) {
-        const rowOffset = constants.MAP.ROW_OFFSET;
-        const colOffset = constants.MAP.COL_OFFSET;
+        const rowOffset = gameConfig.MAP.ROW_OFFSET;
+        const colOffset = gameConfig.MAP.COL_OFFSET;
         const neighbors = [];
 
-        for (const dir of constants.MAP.DIRECTIONS) {
+        for (const dir of gameConfig.MAP.DIRECTIONS) {
             const neighborCell = {
                 row: currentCell.row + rowOffset[dir],
                 col: currentCell.col + colOffset[dir],

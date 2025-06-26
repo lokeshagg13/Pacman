@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
+import gameConfig from "../../../logic/gameConfig";
 import GameContext from "../../../store/gameContext";
-import constants from "../../../store/constants";
 import DropdownIcon from "../../ui/DropdownIcon";
 import SimulatorContext from "../../../store/simulatorContext";
 
@@ -45,7 +45,7 @@ function GameForm({ type = "start", expanded = false }) {
                 value={playerType}
                 onChange={(e) => setPlayerType(e.target.value)}
               >
-                {constants.PLAYER.TYPES.map((type) => (
+                {gameConfig.PLAYER.TYPES.map((type) => (
                   <option value={type} key={type}>
                     {type === "bot" ? "Bot" : "User"}
                   </option>
@@ -66,7 +66,7 @@ function GameForm({ type = "start", expanded = false }) {
                 value={difficultyLevel}
                 onChange={(e) => setDifficultyLevel(e.target.value)}
               >
-                {constants.GAME.DIFFICULTY_TYPES.map(({ LEVEL }) => (
+                {gameConfig.GAME.DIFFICULTY_TYPES.map(({ LEVEL }) => (
                   <option value={LEVEL} key={LEVEL}>
                     {LEVEL === "easy"
                       ? "Easy"

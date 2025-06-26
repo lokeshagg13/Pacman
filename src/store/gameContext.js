@@ -1,6 +1,6 @@
 import { createContext, useRef, useState } from "react";
 import { initGame } from "../logic/gameLoop";
-import constants from "./constants";
+import gameConfig from "../logic/gameConfig";
 
 const GameContext = createContext({
     gameStatus: null,
@@ -21,12 +21,12 @@ const GameContext = createContext({
 
 export function GameContextProvider(props) {
     const [gameStatus, setGameStatus] = useState(null);
-    const [playerType, setPlayerType] = useState(constants.PLAYER.TYPES[0]);
+    const [playerType, setPlayerType] = useState(gameConfig.PLAYER.TYPES[0]);
     const [difficultyLevel, setDifficultyLevel] = useState(
-        constants.GAME.DIFFICULTY_TYPES[0].LEVEL
+        gameConfig.GAME.DIFFICULTY_TYPES[0].LEVEL
     );
     const [score, setScore] = useState(0);
-    const [lives, setLives] = useState(constants.PLAYER.TOTAL_LIVES);
+    const [lives, setLives] = useState(gameConfig.PLAYER.TOTAL_LIVES);
     const [isWinner, setIsWinner] = useState(false);
 
     const gameCanvasRef = useRef(null);
@@ -37,11 +37,11 @@ export function GameContextProvider(props) {
     function handleStartGame(playerType, difficultyLevel) {
         setGameStatus("running");
         setScore(0);
-        setLives(constants.PLAYER.TOTAL_LIVES);
+        setLives(gameConfig.PLAYER.TOTAL_LIVES);
         setIsWinner(false);
-        if (playerType && constants.PLAYER.TYPES.includes(playerType)) setPlayerType(playerType);
+        if (playerType && gameConfig.PLAYER.TYPES.includes(playerType)) setPlayerType(playerType);
 
-        const levels = constants.GAME.DIFFICULTY_TYPES.map(level => level.LEVEL);
+        const levels = gameConfig.GAME.DIFFICULTY_TYPES.map(level => level.LEVEL);
         if (difficultyLevel && levels.includes(difficultyLevel)) setDifficultyLevel(difficultyLevel);
 
         const { startGame, pauseGame, resumeGame, endGame } = initGame(gameCanvasRef.current, playerType, difficultyLevel, {

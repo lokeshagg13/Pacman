@@ -1,4 +1,4 @@
-import constants from "../../store/constants";
+import gameConfig from "../gameConfig";
 
 class Pellet {
     constructor({ position, indices, radius }) {
@@ -33,7 +33,7 @@ class Pellet {
             0,
             2 * Math.PI
         );
-        ctx.fillStyle = constants.PELLET.COLOR;
+        ctx.fillStyle = gameConfig.PELLET.COLOR;
         ctx.fill();
         ctx.closePath();
     }
