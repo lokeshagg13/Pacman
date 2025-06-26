@@ -129,13 +129,13 @@ class Ghost {
     }
 
     // Draw the ghost
-    draw(ctx, { showProximity = null }) {
+    draw(ctx, { showGhostProximityCircle = null }) {
         const { top, left } = this.getCurrentBoundingPositions();
         const legRadiusX = constants.GHOST.LEGS.RADIUS_PERC * this.width;
         const legRadiusY = constants.GHOST.LEGS.RADIUS_PERC * this.height;
 
         // Draw promixity circle if required
-        if (showProximity) {
+        if (showGhostProximityCircle) {
             const { x, y } = this.position;
             const { x: prX, y: prY } = this.promixityRadius;
             ctx.save();

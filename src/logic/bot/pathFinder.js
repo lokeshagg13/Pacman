@@ -6,7 +6,7 @@ class PathFinder {
         return Math.abs(currentCell.col - destCell.col) + Math.abs(currentCell.row - destCell.row);
     }
 
-    static getNeighbors(currentCell, movableGrid) {
+    static getNeighbors(currentCell, movableGrid, blockedCells) {
         const rowOffset = constants.MAP.ROW_OFFSET;
         const colOffset = constants.MAP.COL_OFFSET;
         const neighbors = [];
@@ -22,7 +22,8 @@ class PathFinder {
                 neighborCell.col >= 0 &&
                 neighborCell.row < movableGrid.length &&
                 neighborCell.col < movableGrid[0].length &&
-                movableGrid[neighborCell.row][neighborCell.col] === 0) {
+                !blockedCells.includes(movableGrid[neighborCell.row][neighborCell.col])
+            ) {
                 neighbors.push(neighborCell);
             }
         }
@@ -42,7 +43,7 @@ class PathFinder {
         return path.reverse();
     }
 
-    static findPath(srcCell, destCell, movableGrid) {
+    static findPath(srcCell, destCell, movableGrid, blockedCells) {
         const queue = [srcCell];
         const pathTracker = new Map();
         const gScore = new Map();   // Cost from start to current cell
@@ -65,7 +66,7 @@ class PathFinder {
             queue.splice(queue.indexOf(currentCell), 1);
             visited.add(`${currentCell.row},${currentCell.col}`);
 
-            for (const neighborCell of PathFinder.getNeighbors(currentCell, movableGrid)) {
+            for (const neighborCell of PathFinder.getNeighbors(currentCell, movableGrid, blockedCells)) {
                 const neighborKey = `${neighborCell.row},${neighborCell.col}`;
                 if (visited.has(neighborKey)) continue;
 

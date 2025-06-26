@@ -1,16 +1,12 @@
 import constants from "../../../store/constants";
 import PathFinder from "../../bot/pathFinder";
-import Blueprint from "../../world/blueprint";
 import PlayerController from "./playerController";
 
 class BotPlayerController extends PlayerController {
-    static avoidGhostProximityCells = constants.PLAYER.AVOID_GHOST_PROXIMITY_CELLS;
-
     constructor(game, simulation = false) {
         super(game);
         this.simulation = simulation;
-        if (!simulation) this.movableGrid = null;
-        else {
+        if (simulation) {
             this.autoState = {
                 up: false,
                 down: false,
@@ -19,38 +15,6 @@ class BotPlayerController extends PlayerController {
             };
             this.lastActionValue = "";
         }
-    }
-
-    // Find the movable grid from the game's map, pellet positions as well as ghost positions
-    #updateMovableGrid() {
-        const { map, ghosts } = this.game;
-
-        // 0 = movable cell and 1 = blocked cells
-        const grid = map.blueprint.map(row =>
-            row.map(cell =>
-                Blueprint.movableSymbols.includes(cell) ? 0 : 1
-            )
-        );
-
-        ghosts.forEach(ghost => {
-            const { row: ghostRow, col: ghostCol } = ghost.indices;
-            const rowProximity = BotPlayerController.avoidGhostProximityCells;
-            const colProximity = BotPlayerController.avoidGhostProximityCells;
-
-            for (let r = ghostRow - rowProximity; r <= ghostRow + rowProximity; r += 1) {
-                for (let c = ghostCol - colProximity; c <= ghostCol + colProximity; c += 1) {
-                    if (
-                        r >= 0 &&
-                        c >= 0 &&
-                        r < map.numRows &&
-                        c < map.numCols
-                    ) {
-                        grid[r][c] = 1;    // Marking it as unsafe
-                    }
-                }
-            }
-        });
-        this.movableGrid = grid;
     }
 
     #isCellSafeFromGhosts(cell) {
@@ -81,7 +45,9 @@ class BotPlayerController extends PlayerController {
                 newCol >= 0 &&
                 newRow < map.numRows &&
                 newCol < map.numCols &&
-                this.#isCellSafeFromGhosts({ row: newRow, col: newCol })
+                this.#isCellSafeFromGhosts({ row: newRow, col: newCol }) &&
+                map.movableGrid[newRow][newCol] === constants.MAP.CELL_MOBILITY_STATES.MOVABLE
+
             ) {
                 if (!safeDirections.includes(dir))
                     safeDirections.push(dir);
@@ -96,6 +62,7 @@ class BotPlayerController extends PlayerController {
         const safeDirections = this.#getGhostSafeDirection();
         let randomDirection;
         if (safeDirections.length > 0) {
+            if (safeDirections.includes(player.state)) return;
             randomDirection = safeDirections[Math.floor(Math.random() * safeDirections.length)];
         } else {
             const allDirections = PlayerController.directions;
@@ -106,7 +73,7 @@ class BotPlayerController extends PlayerController {
 
     // Recalculating the nearest pellet and path to nearest pellet
     #recalculatePathToNearestPellet() {
-        const { player, pellets } = this.game;
+        const { map, player, pellets } = this.game;
         const nearestPellet = player.findNearestPellet(
             pellets,
             (cell1, cell2) => PathFinder.getHeuristicCost(cell1, cell2)
@@ -118,7 +85,8 @@ class BotPlayerController extends PlayerController {
         player.pathToNearestPellet = PathFinder.findPath(
             player.indices,
             nearestPellet.cell,
-            this.movableGrid
+            map.movableGrid,
+            [constants.MAP.CELL_MOBILITY_STATES.BLOCKED, constants.MAP.CELL_MOBILITY_STATES.GHOST_PROXIMITY]    // For bot players, ghost proximity cells are also blocked
         );
         player.pathIndex = 0;
         if (player.pathToNearestPellet.length === 0) {
@@ -208,7 +176,6 @@ class BotPlayerController extends PlayerController {
         if (this.simulation) {
             this.#updatePlayerMovementStateBasedOnAutoStates();
         } else {
-            this.#updateMovableGrid();
             this.#updatePlayerMovementStateBasedOnPath();
         }
 

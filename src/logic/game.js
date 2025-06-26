@@ -232,12 +232,16 @@ class Game {
     // Update all the game objects
     updateGameObjects() {
         // When player dies, game is on hold until reset for next round
-        if (this.isOnHold) return;
+        if (this.isOnHold || this.isPlayerFreezed) return;
 
-        if (!this.isPlayerFreezed) {
-            this.player.updateMouthAnimation();
-            this.playerController.update();
+        if (this.playerType === "user") {
+            this.map.updateMovableGrid({ applyGhostBlockage: false });
+        } else {
+            this.map.updateMovableGrid({ applyGhostBlockage: true, ghosts: this.ghosts, player: this.player });
         }
+
+        this.player.updateMouthAnimation();
+        this.playerController.update();
         this.ghostController.update();
         this.checkPelletsCollision();
         this.checkGhostsCollision();
@@ -248,13 +252,15 @@ class Game {
         const ctx = this.canvas.getContext("2d");
         ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-        this.map.draw(ctx);
+        this.map.draw(ctx, {
+            showGhostProximityGrid: this.playerType === "bot" && constants.GHOST.MOVEMENT.SHOW_PROXIMITY_GRID
+        });
         this.pellets.forEach((pellet) => {
             pellet.draw(ctx);
         });
         this.ghosts.forEach((ghost) => {
             ghost.draw(ctx, {
-                showProximity: constants.GHOST.MOVEMENT.SHOW_PROXIMITY
+                showGhostProximityCircle: constants.GHOST.MOVEMENT.SHOW_PROXIMITY_CIRCLE
             });
         });
         this.player.draw(ctx);

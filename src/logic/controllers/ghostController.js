@@ -9,7 +9,6 @@ class GhostController {
 
     constructor(game) {
         this.game = game;
-        this.movableGrid = null;
         this.randomStepLimit = constants.GHOST.MOVEMENT.RANDOM_STEP_LIMIT;
         this.pathUpdateInterval = constants.GHOST.MOVEMENT.PATH_UPDATE_INTERVAL;
         this.lastPathUpdateTime = null;
@@ -111,30 +110,17 @@ class GhostController {
         ghost.randomSteps += 1;
     }
 
-    // Find the movable grid from the game's map, pellet positions as well as ghost positions
-    #updateMovableGrid() {
-        const { map } = this.game;
-
-        // 0 = movable cell and 1 = blocked cells
-        const grid = map.blueprint.map(row =>
-            row.map(cell =>
-                Blueprint.movableSymbols.includes(cell) ? 0 : 1
-            )
-        );
-
-        this.movableGrid = grid;
-    }
-
     // Recalculate Path to Player
     #recalculatePathToPlayer(ghost) {
-        const { player } = this.game;
+        const { player, map } = this.game;
 
         ghost.targetCell = null;
         ghost.targetPosition = null;
         ghost.pathToPlayer = PathFinder.findPath(
             ghost.indices,
             player.indices,
-            this.movableGrid
+            map.movableGrid,
+            [constants.MAP.CELL_MOBILITY_STATES.BLOCKED]    // For ghosts, the ghost proximity cells are not blocked at all
         );
         ghost.pathIndex = 0;
         if (ghost.pathToPlayer.length === 0) {
@@ -200,7 +186,6 @@ class GhostController {
     // Method to update ghosts
     update() {
         const { ghosts } = this.game;
-        this.#updateMovableGrid();
         ghosts.forEach((ghost) => {
             // Update movements
             if (this.#isPlayerWithinGhostProximity(ghost)) {

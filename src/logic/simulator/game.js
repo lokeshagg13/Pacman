@@ -337,13 +337,14 @@ class SimulatorGame {
 
     // Update all the game objects
     updateGameObjects() {
-        this.rewardProgressTowardPellets();
+        this.fitness += 1;  // Reward for surviving each step of game
 
+        this.rewardProgressTowardPellets();
         this.trackAndPenalizeNonProgressiveMoves();
 
         this.player.updateMouthAnimation();
 
-        this.fitness += 1;
+        this.map.updateMovableGrid({ applyGhostBlockage: false });
 
         this.ghostController.update();
 
@@ -374,13 +375,13 @@ class SimulatorGame {
         const ctx = this.canvas.getContext("2d");
         ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-        this.map.draw(ctx);
+        this.map.draw(ctx, { showGhostProximityGrid: false });
         this.pellets.forEach((pellet) => {
             pellet.draw(ctx);
         });
         this.ghosts.forEach((ghost) => {
             ghost.draw(ctx, {
-                showProximity: constants.GHOST.MOVEMENT.SHOW_PROXIMITY
+                showGhostProximityCircle: constants.GHOST.MOVEMENT.SHOW_PROXIMITY_CIRCLE
             });
         });
         this.player.draw(ctx);

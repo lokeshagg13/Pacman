@@ -11,6 +11,7 @@ class Map {
         this.cellHeight = cellHeight;
         this.boundaries = [];
         this.jailCells = []; // Track position of all jail bar cells
+        this.movableGrid = null;
         this.#generateMap();
     }
 
@@ -109,55 +110,77 @@ class Map {
         };
     }
 
-    // Find shortest path between source and destination positions
-    findShortestPath({ source, destination }) {
-        source = this.getArrayIndicesForCanvasPosition(source);
-        destination = this.getArrayIndicesForCanvasPosition(destination);
+    // Find the movable grid from the game's blueprint, pellet positions as well as ghost positions
+    updateMovableGrid({ applyGhostBlockage = false, ghosts = null, player = null }) {
+        const grid = this.blueprint.map(row =>
+            row.map(cell =>
+                Blueprint.movableSymbols.includes(cell) ?
+                    constants.MAP.CELL_MOBILITY_STATES.MOVABLE :
+                    constants.MAP.CELL_MOBILITY_STATES.BLOCKED
+            )
+        );
+        this.movableGrid = grid;
 
-        const directions = [
-            { row: -1, col: 0, move: "up" },   // Up
-            { row: 1, col: 0, move: "down" },  // Down
-            { row: 0, col: -1, move: "left" }, // Left
-            { row: 0, col: 1, move: "right" }  // Right
-        ];
-        const queue = [[source.row, source.col, []]];
-        const visited = Array.from({ length: this.numRows }, () => Array(this.numCols).fill(false));
+        if (!applyGhostBlockage) return;
 
-        visited[source.row][source.col] = true;
+        // Code to apply blockage in the movable grid due to ghosts (Since ghost blockage is not needed in case of user controlled players or simulation environments)
+        const { row: playerRow, col: playerCol } = player.indices;
+        ghosts.forEach(ghost => {
+            const { row: ghostRow, col: ghostCol } = ghost.indices;
+            const rowProximity = constants.PLAYER.AVOID_GHOST_PROXIMITY_CELLS;
+            const colProximity = constants.PLAYER.AVOID_GHOST_PROXIMITY_CELLS;
 
-        while (queue.length > 0) {
-            const [currentRow, currentCol, path] = queue.shift();
+            // Determine where the player is relative to the ghost
+            const isAbove = playerRow < ghostRow;
+            const isBelow = playerRow > ghostRow;
+            const isLeft = playerCol < ghostCol;
+            const isRight = playerCol > ghostCol;
 
-            if (currentRow === destination.row && currentCol === destination.col) {
-                return path;
-            }
+            for (let r = ghostRow - rowProximity; r <= ghostRow + rowProximity; r += 1) {
+                for (let c = ghostCol - colProximity; c <= ghostCol + colProximity; c += 1) {
+                    if (
+                        r >= 0 &&
+                        c >= 0 &&
+                        r < this.numRows &&
+                        c < this.numCols
+                    ) {
+                        // Apply the proximity logic based on the player's relative position
+                        const isInsideProximity =
+                            (isAbove && r >= ghostRow) || // Top side
+                            (isBelow && r <= ghostRow) || // Bottom side
+                            (isLeft && c >= ghostCol) ||  // Left side
+                            (isRight && c <= ghostCol);   // Right side
 
-            for (const { row: dRow, col: dCol, move } of directions) {
-                const newRow = currentRow + dRow;
-                const newCol = currentCol + dCol;
-
-                if (
-                    newRow >= 0 &&
-                    newRow < this.numRows &&
-                    newCol >= 0 &&
-                    newCol < this.numCols &&
-                    Blueprint.movableSymbols.includes(this.blueprint[newRow][newCol]) &&
-                    !visited[newRow][newCol]
-                ) {
-                    visited[newRow][newCol] = true;
-                    queue.push([newRow, newCol, [...path, move]]);
+                        if (isInsideProximity) {
+                            grid[r][c] = constants.MAP.CELL_MOBILITY_STATES.GHOST_PROXIMITY; // Marking it as unsafe to move into
+                        }
+                    }
                 }
             }
-        }
-
-        return null;
+        });
+        this.movableGrid = grid;
     }
 
     // Draw the map on the canvas
-    draw(ctx) {
+    draw(ctx, { showGhostProximityGrid = false }) {
         this.boundaries.forEach((boundary) => {
             boundary.draw(ctx);
         });
+
+        if (showGhostProximityGrid) {
+            if (!this.movableGrid) return;
+            this.movableGrid.forEach((rowArray, row) => {
+                rowArray.forEach((cell, col) => {
+                    if (cell !== constants.MAP.CELL_MOBILITY_STATES.GHOST_PROXIMITY) return;
+                    const { x, y } = this.getCanvasPositionForArrayIndices({
+                        position: { row, col },
+                        offset: { x: 0, y: 0 }
+                    });
+                    ctx.fillStyle = "rgba(255, 0,0, 0.4)";
+                    ctx.fillRect(x, y, this.cellWidth, this.cellHeight);
+                });
+            });
+        }
     }
 }
 
