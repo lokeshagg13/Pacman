@@ -53,8 +53,8 @@ Pacman/
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/your-repo/pacman-game.git
-   cd pacman-game
+   git clone https://github.com/lokeshagg13/Pacman.git
+   cd Pacman
    ```
 
 2. Install dependencies:
@@ -106,7 +106,7 @@ Pacman/
 
 ## 🧠 NEAT Algorithm
 
-For detailed NEAT implementation and training parameters, refer to [NEAT.md](./resources/NEAT.md).
+For detailed NEAT implementation and training parameters, refer to [Neat Algorithm](./resources/NEAT.md).
 
 ---
 
@@ -121,7 +121,7 @@ For detailed NEAT implementation and training parameters, refer to [NEAT.md](./r
 ### **Customization** ✏️
 
 - 🗺️ **Game Maps:** Modify maps in `logic/world/data/blueprints.json`.
-- 🎛️ **Config Parameters:** Adjust game parameters in `logic/gameConfig.js`. See [GAMECONFIG.md](./resources/GAMECONFIG.md) for details.
+- 🎛️ **Config Parameters:** Adjust game parameters in `logic/gameConfig.js`. See [Game Config](./resources/GAMECONFIG.md) for details.
 - 🤖 **Bot Training:** Update training settings in `logic/bot/config.js`.
 
 ---
