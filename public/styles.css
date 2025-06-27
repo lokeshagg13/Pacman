@@ -644,4 +644,29 @@
     }
   }
   /* #endregion */
+
+  /* #region - Footer */
+  .footer {
+    background: black;
+    color: white;
+    padding: 1rem;
+    width: 100%;
+    position: relative;
+  }
+
+  .footer-content {
+    text-align: center;
+    width: 100%;
+  }
+
+  .footer-text {
+    font-size: 0.875rem;
+    text-align: center;
+    color: #ccc;
+  }
+
+  .footer-name {
+    color: #bb86fc;
+  }
+  /* #endregion */
 }
